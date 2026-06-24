@@ -1,0 +1,60 @@
+# SOP-3E-01: CI 质量门禁（仅质量检查，不部署）
+# 部署走 scripts/deploy.sh 手动触发（Vercel CLI 预构建上传）
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.12"
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check
+        run: pnpm exec tsc --noEmit
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+      # rendering-audit 需要运行中的生产服务器抓取 HTML
+      - name: Start prod preview
+        run: pnpm start -p 3100 &
+      - name: Wait for server
+        run: npx wait-on http://localhost:3100 -t 60000
+      - name: Rendering audit
+        run: BASE_URL=http://localhost:3100 pnpm rendering-audit
+
+  # Lighthouse CI（可选，本期注释降级——避免 CI 复杂化，待 Phase 5 全量启用）
+  # lighthouse:
+  #   needs: quality-gate
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Lighthouse CI
+  #       uses: treosh/lighthouse-ci-action@v11
+  #       with:
+  #         urls: |
+  #           http://localhost:3100
+  #           http://localhost:3100/templates
+  #           http://localhost:3100/pricing
+  #         budgetPath: .lighthouserc.json
+  #         uploadArtifacts: true
