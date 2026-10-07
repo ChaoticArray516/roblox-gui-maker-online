@@ -24,6 +24,8 @@ export interface TemplateDetailProps {
   /** 截图 URL 列表（绝对 URL） */
   images: string[];
   features: string[];
+  /** 可选 FAQ 条目；传入时 @graph 追加 FAQPage 节点（SOP-3L-04） */
+  faqs?: { question: string; answer: string }[];
 }
 
 export function TemplateDetailJsonLd({
@@ -34,6 +36,8 @@ export function TemplateDetailJsonLd({
   priceCurrency,
   category,
   images,
+  features,
+  faqs,
 }: TemplateDetailProps) {
   const base = `${SITE_URL}/templates/${slug}`;
 
@@ -46,20 +50,16 @@ export function TemplateDetailJsonLd({
       category,
       image: images,
       brand: MERCHANT_BRAND,
-      ...(price === 0
-        ? {
-            offers: {
-              "@type": "Offer",
-              price: price.toString(),
-              priceCurrency,
-              availability: "https://schema.org/InStock",
-              url: base,
-              seller: { "@id": `${SITE_URL}/#organization` },
-              hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
-              shippingDetails: MERCHANT_SHIPPING_DETAILS,
-            },
-          }
-        : {}),
+      offers: {
+        "@type": "Offer",
+        price: price.toString(),
+        priceCurrency,
+        availability: "https://schema.org/InStock",
+        url: base,
+        seller: { "@id": `${SITE_URL}/#organization` },
+        hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
+        shippingDetails: MERCHANT_SHIPPING_DETAILS,
+      },
     },
     {
       "@type": "SoftwareApplication",
@@ -94,6 +94,19 @@ export function TemplateDetailJsonLd({
       ],
     },
   ];
+
+  // SOP-3L-04: 可选 FAQPage 节点（当 faqs 传入时追加）
+  if (faqs && faqs.length > 0) {
+    graph.push({
+      "@type": "FAQPage",
+      "@id": `${base}/#faqpage`,
+      mainEntity: faqs.map((f) => ({
+        "@type": "Question",
+        name: f.question,
+        acceptedAnswer: { "@type": "Answer", text: f.answer },
+      })),
+    });
+  }
 
   return <JsonLd data={graph} id="template-detail-jsonld" />;
 }

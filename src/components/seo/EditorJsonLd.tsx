@@ -49,7 +49,7 @@ export function EditorJsonLd() {
           name: "Do I need Roblox Studio to use the editor?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "No — you can build and preview GUIs entirely in the browser. You only need Roblox Studio when you are ready to paste the exported Luau code. A Studio plugin for one-click import is in development.",
+            text: "No — you can build and preview GUIs entirely in the browser. You only need Roblox Studio when you are ready to paste the exported Luau code. A Studio plugin for one-click import is planned.",
           },
         },
         {
@@ -65,7 +65,7 @@ export function EditorJsonLd() {
           name: "Are there limits on AI generation?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Free plans receive 50 AI generation credits per month. Pro plans get unlimited generations plus priority queue and advanced code logic generation.",
+            text: "Free plans receive 50 AI generation credits per month. Pro plans get unlimited generations and advanced code logic generation.",
           },
         },
         {
@@ -85,22 +85,22 @@ export function EditorJsonLd() {
         {
           "@type": "HowToStep",
           position: 1,
-          name: "Describe your UI",
-          text: "Open the editor and type a natural-language prompt like 'Create a health bar with a red background and green fill'.",
+          name: "Design on the visual GUI editor",
+          text: "Open the visual GUI editor and drag frames, buttons, and images onto the canvas. Adjust Scale, Offset, and anchors in the properties panel.",
           url: `${SITE_URL}/editor`,
         },
         {
           "@type": "HowToStep",
           position: 2,
-          name: "Generate and fine-tune",
-          text: "Our AI generates the Luau code and initial layout. Drag, resize, and adjust colors on the canvas until it matches your game.",
+          name: "Preview on devices",
+          text: "Use the UI preview tool to check your layout on Desktop, Tablet, and Mobile frames before exporting. Fix any responsive issues on the canvas.",
           url: `${SITE_URL}/editor`,
         },
         {
           "@type": "HowToStep",
           position: 3,
-          name: "Export to Studio",
-          text: "Click Export to copy the clean Luau script and paste it into StarterGui. Studio plugin import will be available once the plugin launches.",
+          name: "Export the GUI code",
+          text: "Click Export to get clean Luau as a LocalScript, ModuleScript, or Client+Server bundle — or grab the project JSON or a full ZIP. Paste the GUI code into StarterGui and press Play.",
           url: `${SITE_URL}/editor`,
         },
       ],

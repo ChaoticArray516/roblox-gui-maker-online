@@ -31,19 +31,30 @@ const PAGES = [
   { path: "", label: "/" },
   { path: "templates", label: "/templates" },
   { path: "templates/rpg-inventory", label: "/templates/[slug]" },
+  { path: "templates/daily-rewards", label: "/templates/[slug] daily-rewards" },
   { path: "pricing", label: "/pricing" },
   { path: "faq", label: "/faq" },
   { path: "editor", label: "/editor" },
   { path: "plugin", label: "/plugin" },
   { path: "figma-to-roblox", label: "/figma-to-roblox" },
+  { path: "script-generator", label: "/script-generator" },
+  { path: "ai-generator", label: "/ai-generator" },
+  { path: "compare", label: "/compare" },
+  { path: "compare/best-roblox-gui-makers", label: "/compare/[slug]" },
   { path: "guides", label: "/guides" },
   { path: "guides/fix-gui-scaling", label: "/guides/[slug]" },
   { path: "use-cases", label: "/use-cases" },
   { path: "use-cases/simulator-hud", label: "/use-cases/[game-type]" },
+  { path: "use-cases/tycoon-ui", label: "/use-cases/[game-type] tycoon" },
+  { path: "use-cases/obby-start-screen", label: "/use-cases/[game-type] obby" },
   { path: "blog", label: "/blog" },
   { path: "blog/best-roblox-ui-maker-no-coding", label: "/blog/[slug]" },
+  { path: "blog/roblox-shop-gui-tutorial", label: "/blog/[slug] shop-tutorial" },
+  { path: "blog/how-to-create-roblox-gui", label: "/blog/[slug] create-gui" },
+  { path: "blog/roblox-gui-scaling-problems", label: "/blog/[slug] scaling-problems" },
   { path: "docs", label: "/docs" },
   { path: "docs/quick-start", label: "/docs/[slug]" },
+  { path: "docs/ai-generation-api", label: "/docs/[slug] ai-generation-api" },
 ];
 
 // SSG/ISR 页面源码（禁止 "use client"）
@@ -55,6 +66,10 @@ const SERVER_PAGES = [
   "src/app/faq/page.tsx",
   "src/app/plugin/page.tsx",
   "src/app/figma-to-roblox/page.tsx",
+  "src/app/script-generator/page.tsx",
+  "src/app/ai-generator/page.tsx",
+  "src/app/compare/page.tsx",
+  "src/app/compare/[slug]/page.tsx",
   "src/app/guides/page.tsx",
   "src/app/guides/[slug]/page.tsx",
   "src/app/use-cases/page.tsx",
@@ -72,6 +87,7 @@ const DYNAMIC_ROUTES = [
   "src/app/use-cases/[game-type]/page.tsx",
   "src/app/blog/[slug]/page.tsx",
   "src/app/docs/[slug]/page.tsx",
+  "src/app/compare/[slug]/page.tsx",
 ];
 
 let violations = 0;
@@ -138,14 +154,17 @@ async function main() {
       : `缺失: ${missingParams.join(", ")}`,
   );
 
-  // 检查 6: 内链用 <Link>（<a href="/..."> 仅允许在 noscript 内）
+  // 检查 6: 内链用 <Link>（<a href="/..."> 仅允许 noscript 内 + /api/* 端点）
+  // SOP-3O-08: /api/* 是下载/重定向端点（如 Creem 门户 /api/portal），
+  // 非页面路由导航，<Link> 语义错误且 prefetch 有害，故豁免。
   const srcDir = path.join(WORKSPACE, "src");
   const aHrefFiles = grepDir(srcDir, '<a\\s+[^>]*href="/');
   // 过滤：noscript 内的 <a> 是合理的
   const realViolations = aHrefFiles.filter((f) => {
     const c = fs.readFileSync(f, "utf8");
-    // 提取所有 <a href="/...">，检查是否在 <noscript> 块内
-    const matches = c.match(/<a\s+[^>]*href="\/[^"]*"[^>]*>/g) || [];
+    // 提取所有 <a href="/...">（/api/ 端点除外），检查是否在 <noscript> 块内
+    const matches =
+      c.match(/<a\s+[^>]*href="\/(?!api\/)[^"]*"[^>]*>/g) || [];
     return matches.some((m) => {
       const idx = c.indexOf(m);
       const before = c.slice(0, idx);

@@ -3,13 +3,16 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Breadcrumb, DocsJsonLd } from "@/components/seo";
+import { Breadcrumb, DocsJsonLd, buildPageOpenGraph } from "@/components/seo";
+import { OG_PAGES } from "@/lib/og-pages";
+
+const OG = OG_PAGES["/docs"];
 
 export const metadata: Metadata = {
-  title: "Roblox GUI Maker Documentation",
-  description:
-    "Documentation for the Roblox GUI Maker editor, Studio plugin, AI generation API, Figma import, and template development.",
+  title: OG.title,
+  description: OG.description,
   alternates: { canonical: "/docs" },
+  ...buildPageOpenGraph({ url: "/docs", ...OG }), // SOP-3W-02
 };
 
 const DOCS = [

@@ -8,8 +8,9 @@
  */
 
 import { useRef, type PointerEvent as ReactPointerEvent } from "react";
-import { type GUIElement } from "@/lib/types";
+import { type GUIElement, isVisualContainer } from "@/lib/types";
 import { color3ToCss, udim2ToPixels, snapToGrid } from "@/lib/editor-utils";
+import { useEditorContext } from "../context/EditorContext";
 
 interface Props {
   element: GUIElement;
@@ -30,6 +31,10 @@ export function EditorElement({ element, isSelected, isPreview, parentW, parentH
 
   const pos = udim2ToPixels(element.properties.position, parentW, parentH);
   const size = udim2ToPixels(element.properties.size, parentW, parentH);
+  const { state, actions } = useEditorContext();
+  const childElements = element.children
+    .map((id) => state.elements[id])
+    .filter((c): c is GUIElement => Boolean(c) && isVisualContainer(c.type) && c.type !== "ScreenGui");
   const p = element.properties;
 
   const bg = color3ToCss(p.backgroundColor3, p.backgroundTransparency);
@@ -94,6 +99,7 @@ export function EditorElement({ element, isSelected, isPreview, parentW, parentH
       onPointerDown={(e) => handlePointerDown(e, "move")}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onClick={(e) => e.stopPropagation()}
       onKeyDown={(e) => {
         if (e.key === "Delete" || e.key === "Backspace") {
           e.preventDefault();
@@ -119,6 +125,69 @@ export function EditorElement({ element, isSelected, isPreview, parentW, parentH
       {element.type === "ScrollingFrame" && (
         <span className="text-text-muted/50">ScrollingFrame</span>
       )}
+      {/* SOP-3I-04: 媒体/3D 组件画布占位 */}
+      {element.type === "VideoFrame" && (
+        <span className="text-text-muted/50">VideoFrame</span>
+      )}
+      {element.type === "ViewportFrame" && (
+        <span className="text-text-muted/50">ViewportFrame</span>
+      )}
+      {element.type === "CanvasGroup" && (
+        <span className="text-text-muted/50">CanvasGroup</span>
+      )}
+      {/* SOP-3I-05: 世界空间容器画布占位 */}
+      {element.type === "BillboardGui" && (
+        <span className="text-text-muted/50">BillboardGui</span>
+      )}
+      {element.type === "SurfaceGui" && (
+        <span className="text-text-muted/50">SurfaceGui</span>
+      )}
+      {/* SOP-3I-07: 交互复合组件画布占位 */}
+      {element.type === "DraggablePanel" && (
+        <span className="text-text-muted/50">{p.dragHandleTitle || "DraggablePanel"}</span>
+      )}
+      {element.type === "AnimatedButton" && (
+        <span className="text-text-muted/50">{p.text || "AnimatedButton"}</span>
+      )}
+      {element.type === "TypewriterText" && (
+        <span className="text-text-muted/50">{p.fullText || "TypewriterText"}</span>
+      )}
+      {element.type === "CountdownTimer" && (
+        <span className="text-text-muted/50">{p.text || "00:00"}</span>
+      )}
+      {element.type === "ModalDialog" && (
+        <span className="text-text-muted/50">{p.titleText || "ModalDialog"}</span>
+      )}
+      {element.type === "TabContainer" && (
+        <span className="text-text-muted/50">TabContainer</span>
+      )}
+      {element.type === "DropdownMenu" && (
+        <span className="text-text-muted/50">{p.dropdownPlaceholder || "DropdownMenu"}</span>
+      )}
+      {element.type === "SliderBar" && (
+        <span className="text-text-muted/50">SliderBar</span>
+      )}
+      {element.type === "NotificationToast" && (
+        <span className="text-text-muted/50">{p.text || "NotificationToast"}</span>
+      )}
+      {element.type === "TweenedFrame" && (
+        <span className="text-text-muted/50">TweenedFrame</span>
+      )}
+
+      {/* 递归渲染子可视元素 */}
+      {childElements.map((child) => (
+        <EditorElement
+          key={child.id}
+          element={child}
+          isSelected={state.selectedId === child.id}
+          isPreview={isPreview}
+          parentW={size.x}
+          parentH={size.y}
+          onSelect={() => actions.selectElement(child.id)}
+          onMove={onMove}
+          onResize={onResize}
+        />
+      ))}
 
       {/* Resize 手柄（仅选中 + 非 preview） */}
       {isSelected && !isPreview && HANDLES.map((dir) => (

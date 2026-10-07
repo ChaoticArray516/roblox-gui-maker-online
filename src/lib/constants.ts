@@ -26,19 +26,6 @@ export type GameType = (typeof GameType)[keyof typeof GameType];
 
 export const GAME_TYPES: readonly GameType[] = Object.values(GameType);
 
-/** 模板分类 — 与 SEO_TECH_SPEC.md §1.3 ItemList 一致 */
-export const TemplateCategory = {
-  Inventory: "inventory",
-  Hud: "hud",
-  Menu: "menu",
-  Shop: "shop",
-  Leaderboard: "leaderboard",
-  DialogueSystem: "dialogue-system",
-  HealthBar: "health-bar",
-  Settings: "settings",
-} as const;
-export type TemplateCategory = (typeof TemplateCategory)[keyof typeof TemplateCategory];
-
 /** 定价计划 — Free 与 Pro */
 export interface PricingPlan {
   readonly id: "free" | "pro";
@@ -63,7 +50,6 @@ export const FREE_PLAN: PricingPlan = {
     "50 AI generation credits / month",
     "Export clean Luau code",
     "Access to free template library",
-    "Roblox Studio plugin (community tier)",
   ],
   ctaLabel: "Start Free",
   ctaHref: "/editor",
@@ -80,13 +66,17 @@ export const PRO_PLAN: PricingPlan = {
     "Everything in Free",
     "Unlimited AI generations",
     "Premium template library",
-    "Figma → Roblox import (priority)",
-    "Studio plugin Pro features",
     "Priority email support",
   ],
-  ctaLabel: "Join Pro waitlist",
-  ctaHref: "mailto:chaoticarray.rf516@gmail.com?subject=Notify%20me%20when%20Roblox%20GUI%20Maker%20Pro%20launches",
+  ctaLabel: "Upgrade to Pro",
+  ctaHref: "/api/checkout?productId=PRO_MONTHLY",
   highlighted: true,
 };
 
 export const PRICING_PLANS: readonly PricingPlan[] = [FREE_PLAN, PRO_PLAN];
+
+/** SOP-3W-03: 导出格式基准表述（唯一事实源 = ExportMenu 实装：7 选项 6 类产物）。
+ *  全站文案引用此常量或与之逐字对齐，禁止散落手写格式清单、禁止排他性
+ *  总数表述（"N formats 共几种"类）；上下文只提子集合法。 */
+export const EXPORT_FORMATS_SUMMARY =
+  "Client Luau, Server Luau, ModuleScript, Client+Server bundle, project JSON, and a ZIP bundle containing everything";

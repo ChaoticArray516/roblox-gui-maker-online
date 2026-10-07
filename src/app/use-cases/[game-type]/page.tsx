@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Breadcrumb, UseCaseDetailJsonLd } from "@/components/seo";
+import { Breadcrumb, UseCaseDetailJsonLd, buildPageOpenGraph } from "@/components/seo";
 import { SITE_URL } from "@/lib/site-config";
 import { USE_CASES, USE_CASE_SLUGS, type UseCaseSlug } from "./data";
 
@@ -23,6 +23,11 @@ export async function generateMetadata({
     title: uc.h1,
     description: uc.description,
     alternates: { canonical: `/use-cases/${uc.slug}` },
+    ...buildPageOpenGraph({
+      url: `/use-cases/${uc.slug}`,
+      title: uc.h1,
+      description: uc.description,
+    }), // SOP-3W-02
   };
 }
 
@@ -61,6 +66,7 @@ export default async function UseCaseDetailPage({
           {uc.h1}
         </h1>
         <p className="text-lg text-text-muted">{uc.description}</p>
+        <p className="text-base leading-7 text-text-muted">{uc.intro}</p>
         <div className="flex flex-wrap gap-3">
           <Link href="/editor" className={cn(buttonVariants({ size: "lg" }))}>
             Build This HUD in Our Editor
@@ -101,6 +107,44 @@ export default async function UseCaseDetailPage({
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="flex flex-col gap-6">
+        {uc.bodySections.map((section) => (
+          <div key={section.heading}>
+            <h2 className="font-display text-2xl font-semibold tracking-tight text-text">
+              {section.heading}
+            </h2>
+            <p className="mt-3 text-base leading-7 text-text-muted">{section.body}</p>
+          </div>
+        ))}
+      </section>
+
+      {uc.designTips.length > 0 && (
+        <section className="rounded-2xl border border-glass-border bg-surface p-6">
+          <h2 className="font-display text-2xl font-semibold text-text">Design tips</h2>
+          <ul className="mt-4 flex flex-col gap-2 text-text-muted">
+            {uc.designTips.map((tip) => (
+              <li key={tip}>• {tip}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section className="rounded-2xl border border-glass-border bg-surface p-6">
+        <h2 className="font-display text-2xl font-semibold text-text">Related templates</h2>
+        <ul className="mt-4 flex flex-col gap-2">
+          {uc.relatedTemplates.map((path) => (
+            <li key={path}>
+              <Link
+                href={path}
+                className="text-cyan-accent hover:underline underline-offset-2"
+              >
+                {path.split("/").pop()}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="rounded-2xl border border-glass-border bg-surface-raised p-8 text-center">

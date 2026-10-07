@@ -4,8 +4,9 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SITE_URL } from "@/lib/site-config";
-import { Breadcrumb, BlogPostJsonLd } from "@/components/seo";
-import { POSTS, POST_SLUGS, type PostSlug } from "./data";
+import { Breadcrumb, BlogPostJsonLd, buildPageOpenGraph } from "@/components/seo";
+import { CodeBlock, FAQAccordion } from "@/components/content";
+import { POSTS, POST_SLUGS, type PostSlug, type BlogSection } from "./data";
 
 export function generateStaticParams() {
   return POST_SLUGS.map((slug) => ({ slug }));
@@ -23,7 +24,52 @@ export async function generateMetadata({
     title: post.title,
     description: post.description,
     alternates: { canonical: `/blog/${post.slug}` },
+    ...buildPageOpenGraph({
+      url: `/blog/${post.slug}`,
+      title: post.title,
+      description: post.description,
+    }), // SOP-3W-02
   };
+}
+
+/** SOP-4 P0: 结构化正文渲染器（CodeBlock/FAQAccordion/list/heading/text） */
+function SectionRenderer({ section }: { section: BlogSection }) {
+  switch (section.type) {
+    case "heading": {
+      const Heading = `h${section.level}` as "h2" | "h3";
+      return (
+        <Heading className="font-display text-2xl font-semibold tracking-tight text-text">
+          {section.text}
+        </Heading>
+      );
+    }
+    case "text":
+      return <p className="text-base leading-7 text-text-muted">{section.body}</p>;
+    case "code":
+      return (
+        <CodeBlock
+          code={section.code}
+          language={section.language as "lua"}
+          filename={section.filename}
+          showLineNumbers
+          cta={section.cta}
+        />
+      );
+    case "faq":
+      return <FAQAccordion items={section.items} injectSchema={false} />;
+    case "list": {
+      const ListTag = section.ordered ? "ol" : "ul";
+      return (
+        <ListTag className="list-inside list-disc space-y-2 text-text-muted">
+          {section.items.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ListTag>
+      );
+    }
+    default:
+      return null;
+  }
 }
 
 export default async function BlogPostPage({
@@ -71,11 +117,19 @@ export default async function BlogPostPage({
           </p>
         </header>
 
-        <div className="prose prose-invert max-w-none text-text-muted">
-          {post.content.split("\n\n").map((paragraph, i) => (
-            <p key={i}>{paragraph}</p>
-          ))}
-        </div>
+        {post.sections && post.sections.length > 0 ? (
+          <div className="flex flex-col gap-6">
+            {post.sections.map((section, i) => (
+              <SectionRenderer key={i} section={section} />
+            ))}
+          </div>
+        ) : (
+          <div className="prose prose-invert max-w-none text-text-muted">
+            {post.content.split("\n\n").map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+          </div>
+        )}
 
         <div className="flex flex-wrap gap-3">
           <Link href="/editor" className={cn(buttonVariants({ size: "lg" }))}>

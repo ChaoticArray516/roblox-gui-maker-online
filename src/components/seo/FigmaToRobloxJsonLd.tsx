@@ -1,8 +1,9 @@
 /**
- * SOP-3B-04: Figma→Roblox 落地页 JSON-LD — @graph: SoftwareApplication + BreadcrumbList
+ * SOP-3B-04 / SOP-3O-02: Figma->Roblox 落地页 JSON-LD
  *
- * 转换器尚未正式发布，不再声明 HowTo（避免暗示用户现在就能完成 3 步流程），
- * SoftwareApplication 使用 PreOrder availability 并标注 planned features。
+ * @graph: SoftwareApplication + HowTo(3 步 planned workflow) + BreadcrumbList
+ * 转换器尚未正式发布，HowTo 用 "planned workflow" 措辞，与页面 PLANNED_STEPS 同源，
+ * 不暗示用户现在就能完成 3 步流程。SoftwareApplication 用 PreOrder availability。
  */
 
 import { SITE_URL, SITE_NAME } from "@/lib/site-config";
@@ -13,7 +14,7 @@ export function FigmaToRobloxJsonLd() {
     {
       "@type": "SoftwareApplication",
       "@id": `${SITE_URL}/figma-to-roblox/#software`,
-      name: `${SITE_NAME} — Figma to Roblox Converter`,
+      name: `${SITE_NAME} - Figma to Roblox Converter`,
       applicationCategory: "DeveloperApplication",
       operatingSystem: "Windows, macOS, Web",
       description:
@@ -33,6 +34,36 @@ export function FigmaToRobloxJsonLd() {
         "Planned: one-click import via Studio plugin once released",
       ],
       browserRequirements: "Requires JavaScript. Chrome, Firefox, Edge, or Safari.",
+    },
+    {
+      "@type": "HowTo",
+      "@id": `${SITE_URL}/figma-to-roblox/#howto`,
+      name: "Convert a Figma design to Roblox Studio UI",
+      description:
+        "Planned workflow once the Figma-to-Roblox converter launches. Join the waitlist to be notified when each step is available.",
+      step: [
+        {
+          "@type": "HowToStep",
+          position: 1,
+          name: "Upload your Figma design",
+          text: "Paste a public Figma file URL or connect your Figma account. The converter will read frames, components, and image layers.",
+          url: `${SITE_URL}/figma-to-roblox`,
+        },
+        {
+          "@type": "HowToStep",
+          position: 2,
+          name: "Auto-convert & upload assets",
+          text: "Frames become ScreenGui/Frame instances, text becomes TextLabel/TextButton, and images are uploaded to your Roblox library automatically.",
+          url: `${SITE_URL}/figma-to-roblox`,
+        },
+        {
+          "@type": "HowToStep",
+          position: 3,
+          name: "Import via Studio plugin",
+          text: "Once the Roblox GUI Maker Studio plugin is live, pick the converted file and drop the UI into StarterGui in one click.",
+          url: `${SITE_URL}/figma-to-roblox`,
+        },
+      ],
     },
     {
       "@type": "BreadcrumbList",

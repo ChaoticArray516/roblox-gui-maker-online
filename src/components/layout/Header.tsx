@@ -12,6 +12,7 @@ import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { PRIMARY_NAV, SITE_NAME } from "@/lib/site-config";
+import { AccountMenu } from "./AccountMenu";
 
 export function Header() {
   return (
@@ -45,7 +46,8 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-2 md:flex">
+          <AccountMenu />
           <Link href="/editor" className={cn(buttonVariants({ size: "lg" }))}>
             Try Editor Free
           </Link>

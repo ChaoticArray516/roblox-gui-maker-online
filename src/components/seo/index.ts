@@ -5,7 +5,7 @@
  */
 
 export { JsonLd, type JsonLdProps } from "./JsonLd";
-export { buildOpenGraph, type OpenGraphProps } from "./OpenGraph";
+export { buildOpenGraph, buildPageOpenGraph, type OpenGraphProps } from "./OpenGraph";
 export { buildAlternates, type CanonicalProps } from "./Canonical";
 export {
   Breadcrumb,

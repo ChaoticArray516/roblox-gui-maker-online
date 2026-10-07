@@ -39,11 +39,10 @@ export const creem = new Creem({
 });
 
 /**
- * 产品 ID 占位常量
+ * 产品 ID — 从 env 读取（SOP-3H-13）
  *
- * ⚠️ 部署前必须替换:
- *   在 Creem Dashboard 创建以下产品后,把这里的占位 slug 改成
- *   真实的 prod_xxx ID,或改为从 env 读取(推荐生产环境用 env)。
+ * 部署时在 Vercel 注入真实 prod_xxx ID（Creem Dashboard 建产品后获得）。
+ * 未配置时为空字符串，checkout 路由会返回 400 提示未配置。
  *
  * 数值与 src/lib/constants.ts PRO_PLAN + src/lib/templates.ts 同源:
  *   - Pro Plan: $9.99/月(constants.ts)
@@ -51,13 +50,13 @@ export const creem = new Creem({
  */
 export const PRODUCTS = {
   /** 订阅: Pro 月付 $9.99 */
-  PRO_MONTHLY: "prod_ROBLOX_GUI_PRO_MONTHLY",
+  PRO_MONTHLY: process.env.CREEM_PRODUCT_PRO_MONTHLY ?? "",
   /** 一次性: $9.99 模板 - FPS HUD */
-  TEMPLATE_FPS_HUD: "prod_ROBLOX_GUI_TEMPLATE_FPS_HUD",
+  TEMPLATE_FPS_HUD: process.env.CREEM_PRODUCT_TEMPLATE_FPS_HUD ?? "",
   /** 一次性: $9.99 模板 - Pet Shop */
-  TEMPLATE_PET_SHOP: "prod_ROBLOX_GUI_TEMPLATE_PET_SHOP",
+  TEMPLATE_PET_SHOP: process.env.CREEM_PRODUCT_TEMPLATE_PET_SHOP ?? "",
   /** 一次性: $9.99 模板 - Dialogue System */
-  TEMPLATE_DIALOGUE: "prod_ROBLOX_GUI_TEMPLATE_DIALOGUE",
+  TEMPLATE_DIALOGUE: process.env.CREEM_PRODUCT_TEMPLATE_DIALOGUE ?? "",
 } as const;
 
 export type ProductKey = keyof typeof PRODUCTS;
@@ -87,6 +86,8 @@ export async function createCheckoutSession(params: {
     successUrl: successUrl ?? `${SITE_URL}/dashboard?checkout=success`,
     customer: { email },
     metadata: {
+      // referenceId 是 @creem_io/nextjs webhook 读 userId 的约定字段（SOP-3H-06）
+      referenceId: userId,
       userId,
       source: "web",
       timestamp: new Date().toISOString(),

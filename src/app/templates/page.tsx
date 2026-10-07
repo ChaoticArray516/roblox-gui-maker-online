@@ -1,43 +1,25 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { TemplatesListJsonLd } from "@/components/seo";
-import { TEMPLATES, getTemplatePriceLabel } from "@/lib/templates";
+import { TemplatesListJsonLd, buildPageOpenGraph } from "@/components/seo";
+import { OG_PAGES } from "@/lib/og-pages";
+import { TemplateBrowser } from "@/components/templates/TemplateBrowser";
+import { TEMPLATES } from "@/lib/templates";
 
 export const revalidate = 3600; // ISR — keep in sync with ISR_REVALIDATE_SECONDS in @/lib/constants
 
+const OG = OG_PAGES["/templates"];
+
 export const metadata: Metadata = {
-  title: "Free & Premium Roblox GUI Templates (Ready-to-Play)",
-  description:
-    "Browse free and premium Roblox GUI templates: RPG inventories, FPS HUDs, shops, and more. Ready to drop into Studio.",
+  title: OG.title,
+  description: OG.description,
   alternates: { canonical: "/templates" },
+  ...buildPageOpenGraph({ url: "/templates", ...OG }), // SOP-3W-02
 };
 
 const templates = Object.values(TEMPLATES);
-
-const FILTERS: { label: string; options: string[]; comingSoon?: boolean }[] = [
-  {
-    label: "Category",
-    options: [
-      "All",
-      "Inventory",
-      "Menu",
-      "Shop",
-      "HUD",
-      "Leaderboard",
-      "Health Bar",
-      "Settings",
-      "Loading Screen",
-      "Dialogue",
-    ],
-    comingSoon: true,
-  },
-  { label: "Price", options: ["All", "Free", "Premium"], comingSoon: true },
-  { label: "Sort", options: ["Newest"], comingSoon: true },
-];
 
 export default function TemplatesPage() {
   return (
@@ -62,82 +44,7 @@ export default function TemplatesPage() {
           </p>
         </header>
 
-        {/* Filters (static display — interactive filtering ships post-MVP) */}
-        <section
-          aria-label="Filter templates"
-          className="flex flex-wrap gap-6 rounded-2xl border border-glass-border bg-surface p-5"
-        >
-          {FILTERS.map((f) => (
-            <div key={f.label} className="flex flex-col gap-1.5">
-              <label
-                htmlFor={`filter-${f.label.toLowerCase()}`}
-                className="text-xs font-semibold uppercase tracking-wide text-text-muted"
-              >
-                {f.label}
-                {f.comingSoon && (
-                  <span className="ml-1.5 normal-case text-text-muted/70">
-                    (coming soon)
-                  </span>
-                )}
-              </label>
-              <select
-                id={`filter-${f.label.toLowerCase()}`}
-                className="rounded-lg border border-glass-border bg-surface-raised px-3 py-2 text-sm text-text disabled:cursor-not-allowed disabled:opacity-60"
-                defaultValue={f.options[0]}
-                disabled={f.comingSoon}
-              >
-                {f.options.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
-        </section>
-
-        <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {templates.map((tpl) => (
-            <li
-              key={tpl.slug}
-              className="flex flex-col gap-3 rounded-2xl border border-glass-border bg-surface p-6"
-            >
-              <figure
-                className="relative aspect-video w-full overflow-hidden rounded-lg border border-glass-border bg-surface-raised"
-              >
-                <Image
-                  src={tpl.previewImage}
-                  alt={`${tpl.name} Roblox GUI template preview — ${tpl.feature}, ${tpl.style} style, ${tpl.device} layout`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover"
-                  loading="lazy"
-                />
-                <figcaption className="sr-only">
-                  {tpl.name} Roblox GUI template preview — {tpl.feature.toLowerCase()}, {tpl.style} style, {tpl.device} layout.
-                </figcaption>
-              </figure>
-              <div className="flex items-center justify-between gap-2">
-                <span className="rounded-full bg-surface-raised px-2.5 py-1 text-xs font-medium text-text-muted">
-                  {tpl.category}
-                </span>
-                <span className="text-xs text-text-muted">
-                  {getTemplatePriceLabel(tpl)}
-                </span>
-              </div>
-              <h2 className="font-display text-xl font-semibold text-text">
-                {tpl.name}
-              </h2>
-              <p className="flex-1 text-sm text-text-muted">{tpl.description}</p>
-              <Link
-                href={`/templates/${tpl.slug}`}
-                className={cn(buttonVariants({ variant: "outline" }))}
-              >
-                View template
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <TemplateBrowser templates={templates} />
 
         {/* SOP-C: 长内容枢纽 — 模板使用指南 + 分类速查（扩字数 + 长尾） */}
         <section className="mt-4 grid gap-10 lg:grid-cols-[2fr_1fr]">
@@ -149,8 +56,7 @@ export default function TemplatesPage() {
               Every template in this library is a complete Roblox GUI — not a
               static mockup. Click <strong>Open in Web Editor</strong> on any
               card to load the layout into the visual editor, then export to
-              StarterGui. Studio plugin sync will be available once the plugin
-              launches.
+              StarterGui.
             </p>
             <h3 className="mt-6 font-display text-lg font-semibold text-text">
               Three ways to ship a template
@@ -163,7 +69,7 @@ export default function TemplatesPage() {
                 <code>LocalScript</code>.
               </li>
               <li>
-                <strong className="text-text">Studio plugin sync (coming soon).</strong>{" "}
+                <strong className="text-text">Studio plugin sync (planned).</strong>{" "}
                 The Roblox GUI Maker plugin is currently on the waitlist. Once
                 it launches on the Creator Marketplace, click Sync in the editor
                 and the GUI will land in Studio as real{" "}
@@ -227,6 +133,8 @@ export default function TemplatesPage() {
                 <li>• Health Bar — tweened damage feedback</li>
                 <li>• Loading Screen — progress bar with tips</li>
                 <li>• Dialogue — typewriter text, branching choices</li>
+                <li>• Settings — toggles, sliders, keybind panels</li>
+                <li>• Rewards — daily claim, streak counters</li>
               </ul>
             </div>
             <div className="rounded-2xl border border-cyan-accent/30 bg-surface-raised p-6">
@@ -246,6 +154,25 @@ export default function TemplatesPage() {
               </Link>
             </div>
           </aside>
+        </section>
+
+        {/* SOP-3K-07: screen-gui-generator section（P2 词：roblox screen gui generator） */}
+        <section className="rounded-2xl border border-glass-border bg-surface p-8">
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-text">
+            Roblox ScreenGui generator
+          </h2>
+          <p className="mt-3 max-w-3xl text-text-muted">
+            Need a ScreenGui from scratch instead of a template? The editor
+            generates one from a prompt. Describe the layout - main menu, HUD,
+            inventory - and get a ScreenGui with Frames, TextLabels, and
+            TextButtons wired up, ready to paste into StarterGui.
+          </p>
+          <Link
+            href="/editor"
+            className={cn(buttonVariants({ size: "lg" }), "mt-6")}
+          >
+            Generate a ScreenGui
+          </Link>
         </section>
 
         {/* CTA band */}

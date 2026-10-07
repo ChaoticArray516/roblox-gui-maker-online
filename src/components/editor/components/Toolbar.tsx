@@ -5,6 +5,8 @@
  *
  * Logo + 撤销/重做 | 设备切换 + Preview + AI | 新建/模板/导入JSON/导出JSON/导出Luau
  * 消费 useEditorContext。纯 CSS 动画（无 framer-motion，守 SOP-3X-06）。
+ * SAVE-01: Save 落库（登录 upsert + toast + 失败回退下载；未登录保持下载）。
+ * SAVE-03: 保存状态点（Saving… / Saved · HH:MM）+ 项目名点击改名。
  */
 
 import {
@@ -24,9 +26,12 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useEditorContext } from "../context/EditorContext";
 import { type DeviceType } from "@/lib/types";
+import { createClient } from "@/lib/supabase/client";
+import { trackEvent } from "@/lib/analytics";
+import { currentPathAsNext } from "@/lib/auth-next";
 
 const DEVICES: { type: DeviceType; icon: typeof Monitor; label: string }[] = [
   { type: "desktop", icon: Monitor, label: "Desktop" },
@@ -34,9 +39,55 @@ const DEVICES: { type: DeviceType; icon: typeof Monitor; label: string }[] = [
   { type: "mobile", icon: Smartphone, label: "Mobile" },
 ];
 
+type Toast = {
+  msg: string;
+  tone: "info" | "success" | "error";
+  link?: { href: string; label: string };
+} | null;
+
 export function Toolbar({ onSwitchTab }: { onSwitchTab: (tab: "components" | "hierarchy" | "ai") => void }) {
-  const { state, actions } = useEditorContext();
+  const { state, projectId, projectName, actions } = useEditorContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // SAVE-01: 登录态（局部读取，同构 AIGenerator 先例，不新加 context 层）
+  const [userId, setUserId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [savedAt, setSavedAt] = useState<Date | null>(null);
+  const [toast, setToast] = useState<Toast>(null);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // SAVE-03: 项目名点击改名
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState("");
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUserId(user?.id ?? null);
+    });
+  }, []);
+
+  const showToast = (
+    msg: string,
+    tone: NonNullable<Toast>["tone"],
+    link?: { href: string; label: string },
+  ) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    setToast({ msg, tone, link });
+    // 带登录链接的 toast 给用户留点击窗口（3s 太短）
+    toastTimerRef.current = setTimeout(() => setToast(null), link ? 8000 : 3000);
+  };
+
+  const downloadProject = () => {
+    const json = actions.exportJSON();
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "project.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -69,20 +120,63 @@ export function Toolbar({ onSwitchTab }: { onSwitchTab: (tab: "components" | "hi
     URL.revokeObjectURL(url);
   };
 
-  const handleSaveJSON = () => {
-    const json = actions.exportJSON();
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "project.json";
-    a.click();
-    URL.revokeObjectURL(url);
+  // SAVE-01: 未登录 → 下载 + 引导；已登录 → insert/update 落库，失败回退下载
+  const handleSave = async () => {
+    if (!userId) {
+      // SOP-3X-08: 全量自动落库链——存 pending 标记（草稿层 debounce/beforeunload
+      // 已持续兜底画布数据），登录回归后由 useEditorState mount 检测自动恢复+落库
+      try {
+        sessionStorage.setItem("pending_save_v1", "1");
+      } catch {
+        // 存储不可用静默——下载兜底仍在
+      }
+      downloadProject();
+      showToast("Project downloaded — log in to save it to the cloud.", "info", {
+        href: `/auth/login?next=${encodeURIComponent(currentPathAsNext())}`,
+        label: "Log in to save",
+      });
+      return;
+    }
+    setSaving(true);
+    try {
+      const supabase = createClient();
+      const guiJson = JSON.parse(actions.exportJSON());
+      if (projectId) {
+        const { error } = await supabase
+          .from("projects")
+          .update({ name: projectName, gui_json: guiJson })
+          .eq("id", projectId);
+        if (error) throw error;
+      } else {
+        const { data, error } = await supabase
+          .from("projects")
+          .insert({ user_id: userId, name: projectName, gui_json: guiJson })
+          .select("id")
+          .single();
+        if (error) throw error;
+        if (data) actions.setProjectId(data.id);
+      }
+      setSavedAt(new Date());
+      actions.clearDraft(); // SOP-3U-07: 落库成功 = 清除时机②
+      trackEvent("project_saved", { source: "manual" }); // SOP-3X-05
+      showToast("Saved to cloud", "success");
+    } catch (e) {
+      console.error("Cloud save failed:", e);
+      downloadProject();
+      showToast("Cloud save failed — downloaded a local copy instead.", "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const commitName = () => {
+    actions.setProjectName(nameDraft.trim() || "Untitled GUI");
+    setEditingName(false);
   };
 
   return (
     <header className="flex h-12 items-center justify-between gap-2 border-b border-glass-border bg-surface px-3">
-      {/* 左：Logo + 撤销/重做 */}
+      {/* 左：Logo + 撤销/重做 + 项目名（SAVE-03） */}
       <div className="flex items-center gap-2">
         <Link href="/" className="flex items-center gap-2">
           <span className="flex size-7 items-center justify-center rounded-md bg-brand-500 font-bold text-white">R</span>
@@ -107,6 +201,33 @@ export function Toolbar({ onSwitchTab }: { onSwitchTab: (tab: "components" | "hi
         >
           <Redo2 className="size-4" />
         </button>
+        <span className="mx-1 hidden h-5 w-px bg-glass-border md:block" />
+        {editingName ? (
+          <input
+            autoFocus
+            value={nameDraft}
+            onChange={(e) => setNameDraft(e.target.value)}
+            onBlur={commitName}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") commitName();
+              if (e.key === "Escape") setEditingName(false);
+            }}
+            aria-label="Project name"
+            className="hidden w-40 rounded-md border border-glass-border bg-surface-raised px-2 py-1 text-xs text-text md:block"
+          />
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              setNameDraft(projectName);
+              setEditingName(true);
+            }}
+            title="Click to rename"
+            className="hidden max-w-40 truncate rounded-md px-2 py-1 text-xs text-text-muted transition-colors hover:bg-surface-raised hover:text-text md:block"
+          >
+            {projectName}
+          </button>
+        )}
       </div>
 
       {/* 中：设备切换 + Preview + AI */}
@@ -151,8 +272,17 @@ export function Toolbar({ onSwitchTab }: { onSwitchTab: (tab: "components" | "hi
         </button>
       </div>
 
-      {/* 右：新建/模板/导入/导出 */}
+      {/* 右：保存状态点（SAVE-03）+ 新建/模板/导入/导出 */}
       <div className="flex items-center gap-1">
+        {(saving || savedAt) && (
+          <span aria-live="polite" className="mr-1 inline text-[10px] text-text-muted">
+            {saving
+              ? "Saving…"
+              : savedAt
+                ? `Saved · ${savedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+                : ""}
+          </span>
+        )}
         <Link
           href="/editor"
           aria-label="New"
@@ -186,9 +316,10 @@ export function Toolbar({ onSwitchTab }: { onSwitchTab: (tab: "components" | "hi
         </button>
         <button
           type="button"
-          onClick={handleSaveJSON}
-          aria-label="Save JSON"
-          className="rounded-md p-1.5 text-text-muted transition-colors hover:bg-surface-raised hover:text-text"
+          onClick={handleSave}
+          disabled={saving}
+          aria-label="Save project"
+          className="rounded-md p-1.5 text-text-muted transition-colors hover:bg-surface-raised hover:text-text disabled:opacity-30"
         >
           <Save className="size-4" />
         </button>
@@ -202,6 +333,38 @@ export function Toolbar({ onSwitchTab }: { onSwitchTab: (tab: "components" | "hi
           <span className="hidden sm:inline">Luau</span>
         </button>
       </div>
+
+      {/* SAVE-01: toast（轻量自研，固定定位，3 秒自动消失） */}
+      {toast && (
+        <div
+          role="status"
+          className={`fixed bottom-4 right-4 z-50 rounded-lg border px-4 py-2 text-sm ${
+            toast.tone === "success"
+              ? "border-cyan-accent/30 bg-surface-raised text-cyan-accent"
+              : toast.tone === "error"
+                ? "border-red-500/30 bg-surface-raised text-red-300"
+                : "border-glass-border bg-surface-raised text-text"
+          }`}
+        >
+          {toast.msg}
+          {toast.link && (
+            <>
+              {" "}
+              {/* SOP-3X-08: 整页跳转兜底（OAuth 必须整页，同 AccountMenu 先例） */}
+              <a
+                href={toast.link.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.assign(toast.link!.href);
+                }}
+                className="font-semibold text-cyan-accent underline"
+              >
+                {toast.link.label}
+              </a>
+            </>
+          )}
+        </div>
+      )}
     </header>
   );
 }

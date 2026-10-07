@@ -8,21 +8,33 @@
  * 点击空白取消选中。消费 useEditorContext。
  */
 
-import { type DragEvent } from "react";
+import { useRef, useEffect, type DragEvent } from "react";
+
+const CANVAS_SIZE = 4000;
 import { MousePointer2 } from "lucide-react";
 import { useEditorContext } from "../context/EditorContext";
 import { EditorElement } from "./EditorElement";
 import { DeviceFrame } from "./DeviceFrame";
 import { DEVICE_CONFIGS } from "@/lib/editor-utils";
-import { type GUIElementType, isVisualElement, getDefaultProperties } from "@/lib/types";
+import { type GUIElementType, isVisualContainer, getDefaultProperties } from "@/lib/types";
 
 export function Canvas() {
-  const { state, actions } = useEditorContext();
+  const { state, actions, projectLoading } = useEditorContext();
   const cfg = DEVICE_CONFIGS[state.deviceType];
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // 首次加载时将设备框置于画布中央，给用户四周都有空间的感觉
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollLeft = (CANVAS_SIZE - el.clientWidth) / 2;
+    el.scrollTop = (CANVAS_SIZE - el.clientHeight) / 2;
+  }, []);
 
   const root = state.rootId ? state.elements[state.rootId] : null;
   const children = root ? root.children.map((id) => state.elements[id]).filter(Boolean) : [];
-  const visualChildren = children.filter((c) => isVisualElement(c.type) && c.type !== "ScreenGui");
+  // SOP-3I-04: 媒体/3D 组件（VideoFrame/ViewportFrame/CanvasGroup）是可视化容器，纳入渲染
+  const visualChildren = children.filter((c) => isVisualContainer(c.type) && c.type !== "ScreenGui");
 
   const handleDrop = (e: DragEvent) => {
     e.preventDefault();
@@ -59,67 +71,55 @@ export function Canvas() {
   };
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-start gap-3 overflow-auto bg-bg p-6">
-      {/* Zoom 控制 */}
-      <div className="flex items-center gap-2 text-xs text-text-muted">
-        <button
-          type="button"
-          onClick={() => actions.setZoom(Math.max(0.1, state.zoom - 0.1))}
-          className="rounded-md border border-glass-border bg-surface px-2 py-1 hover:bg-surface-raised"
-        >
-          −
-        </button>
-        <span className="w-12 text-center">{Math.round(state.zoom * 100)}%</span>
-        <button
-          type="button"
-          onClick={() => actions.setZoom(Math.min(3, state.zoom + 0.1))}
-          className="rounded-md border border-glass-border bg-surface px-2 py-1 hover:bg-surface-raised"
-        >
-          +
-        </button>
-        <button
-          type="button"
-          onClick={() => actions.setZoom(1)}
-          className="rounded-md border border-glass-border bg-surface px-2 py-1 hover:bg-surface-raised"
-        >
-          Reset
-        </button>
-      </div>
-
-      <DeviceFrame deviceType={state.deviceType} zoom={state.zoom}>
-        <div
-          onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; }}
-          onDrop={handleDrop}
-          onClick={() => actions.selectElement(null)}
-          className="relative"
-          style={{
-            width: cfg.width,
-            height: cfg.height,
-            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px)",
-            backgroundSize: "20px 20px",
-          }}
-        >
-          {visualChildren.length === 0 && (
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-2 text-text-muted">
-              <MousePointer2 className="size-6" />
-              <span className="text-sm">Drag a component here</span>
+    <div
+      ref={scrollRef}
+      className="relative flex-1 overflow-auto bg-bg"
+      style={{
+        backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.14) 1px, transparent 1px)",
+        backgroundSize: "20px 20px",
+        backgroundAttachment: "local",
+      }}
+    >
+      <div
+        className="flex shrink-0 items-center justify-center"
+        style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}
+      >
+        <div className="shrink-0">
+          <DeviceFrame deviceType={state.deviceType} zoom={state.zoom}>
+            <div
+              onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; }}
+              onDrop={handleDrop}
+              onClick={() => actions.selectElement(null)}
+              className="relative"
+              style={{
+                width: cfg.width,
+                height: cfg.height,
+              }}
+            >
+              {/* SOP-3X-07: ?project= 加载期不渲染空态提示（治闪烁） */}
+              {!projectLoading && visualChildren.length === 0 && (
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-2 text-text-muted">
+                  <MousePointer2 className="size-6" />
+                  <span className="text-sm">Drag a component here</span>
+                </div>
+              )}
+              {visualChildren.map((el) => (
+                <EditorElement
+                  key={el.id}
+                  element={el}
+                  isSelected={state.selectedId === el.id}
+                  isPreview={state.previewMode}
+                  parentW={cfg.width}
+                  parentH={cfg.height}
+                  onSelect={() => actions.selectElement(el.id)}
+                  onMove={handleMove}
+                  onResize={handleResize}
+                />
+              ))}
             </div>
-          )}
-          {visualChildren.map((el) => (
-            <EditorElement
-              key={el.id}
-              element={el}
-              isSelected={state.selectedId === el.id}
-              isPreview={state.previewMode}
-              parentW={cfg.width}
-              parentH={cfg.height}
-              onSelect={() => actions.selectElement(el.id)}
-              onMove={handleMove}
-              onResize={handleResize}
-            />
-          ))}
+          </DeviceFrame>
         </div>
-      </DeviceFrame>
+      </div>
     </div>
   );
 }

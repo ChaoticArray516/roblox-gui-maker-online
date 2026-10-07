@@ -2,34 +2,28 @@
  * SOP-3C T2-A2: 全站 Footer — 服务端组件（零 "use client"）
  *
  * 品牌列 + FOOTER_NAV 站内导航列（<Link>）+ 版权行。
- * 站内链接只指向 7 个 MVP 路由内的页面；社媒为外链 <a rel>。
- * year 服务端求值（Footer 是 Server Component，无 hydration 漂移）。
+ * 站内链接只指向 7 个 MVP 路由内的页面。
+ * year 取构建期 BUILD_TIME（与 sitemap 同源，防跨年漂移），未注入时兜底当前年。
+ *
+ * Creem 合规(2026-09):已移除指向不存在账号的社媒外链(Twitter/X、YouTube、Discord),
+ * 账号创建后再以真实 URL 恢复。
  */
 
 import Link from "next/link";
 import Image from "next/image";
 
-import {
-  FOOTER_NAV,
-  SITE_NAME,
-  SITE_TWITTER_HANDLE,
-} from "@/lib/site-config";
-
-const SOCIAL_LINKS = [
-  { label: "Twitter / X", href: "https://twitter.com/robloxguimaker" },
-  { label: "YouTube", href: "https://youtube.com/@robloxguimaker" },
-  { label: "Discord", href: "https://discord.gg/robloxguimaker" },
-];
+import { FOOTER_NAV, SITE_NAME, SUPPORT_EMAIL } from "@/lib/site-config";
 
 export function Footer() {
-  const year = new Date().getFullYear();
+  // SOP-3V-14(E8): 与 sitemap 同源的构建期年份，防跨年漂移；BUILD_TIME 未注入时兜底
+  const year = process.env.BUILD_TIME?.slice(0, 4) ?? new Date().getFullYear();
 
   return (
     <footer className="mt-auto border-t border-glass-border bg-surface text-text-muted">
       <div className="mx-auto w-full max-w-6xl px-6 py-14">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-3">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-2">
+          <div className="col-span-2 md:col-span-1">
             <Link
               href="/"
               className="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-text"
@@ -74,22 +68,26 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Community / social (external) */}
+          {/* Legal */}
           <div>
-            <h2 className="text-sm font-semibold text-text">Community</h2>
+            <h2 className="text-sm font-semibold text-text">Legal</h2>
             <ul className="mt-4 space-y-2.5 text-sm">
-              {SOCIAL_LINKS.map((s) => (
-                <li key={s.href}>
-                  <a
-                    href={s.href}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    className="transition-colors hover:text-text"
-                  >
-                    {s.label}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <Link
+                  href="/privacy"
+                  className="transition-colors hover:text-text"
+                >
+                  Privacy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terms"
+                  className="transition-colors hover:text-text"
+                >
+                  Terms
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -102,8 +100,16 @@ export function Footer() {
             Not affiliated with or endorsed by Roblox Corporation. &quot;Roblox&quot; is a
             registered trademark of Roblox Corporation.
           </p>
-          <p>{SITE_TWITTER_HANDLE}</p>
         </div>
+        <p className="mt-3 text-xs text-text-muted">
+          Support:{" "}
+          <a
+            href={`mailto:${SUPPORT_EMAIL}`}
+            className="underline transition-colors hover:text-text"
+          >
+            {SUPPORT_EMAIL}
+          </a>
+        </p>
       </div>
     </footer>
   );

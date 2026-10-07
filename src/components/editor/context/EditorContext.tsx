@@ -29,12 +29,25 @@ export interface EditorActions {
   copyElement: (id: string) => void;
   pasteElement: (parentId: string | null) => void;
   duplicateElement: (id: string) => void;
+  // SAVE-01/02: 云端保存状态与降级提示
+  setProjectId: (id: string | null) => void;
+  setProjectName: (name: string) => void;
+  setNotice: (notice: string | null) => void;
+  // SOP-3U-07: 草稿恢复/丢弃/清除
+  restoreDraft: () => void;
+  discardDraft: () => void;
+  clearDraft: () => void;
   canUndo: boolean;
   canRedo: boolean;
 }
 
 export interface EditorContextValue {
   state: EditorState;
+  projectId: string | null;
+  projectName: string;
+  projectLoading: boolean;
+  notice: string | null;
+  draftInfo: { savedAt: string } | null;
   actions: EditorActions;
 }
 

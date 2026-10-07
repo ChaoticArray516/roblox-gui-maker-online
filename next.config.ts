@@ -3,6 +3,12 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
 
+  // SOP-3V-04: 构建期日期常量（sitemap 静态条目 lastmod 用）——构建时内联一次，
+  // 运行期零 new Date()，防 ISR 冷启动时间戳漂移。
+  env: {
+    BUILD_TIME: new Date().toISOString().slice(0, 10),
+  },
+
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

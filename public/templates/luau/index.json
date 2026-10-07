@@ -1,0 +1,76 @@
+{
+  "templates": [
+    {
+      "slug": "dialogue-system",
+      "name": "Dialogue System",
+      "client": "/templates/luau/dialogue-system/client.lua",
+      "server": "/templates/luau/dialogue-system/server.lua"
+    },
+    {
+      "slug": "fps-hud",
+      "name": "FPS HUD",
+      "client": "/templates/luau/fps-hud/client.lua",
+      "server": "/templates/luau/fps-hud/server.lua"
+    },
+    {
+      "slug": "health-bar",
+      "name": "Health Bar",
+      "client": "/templates/luau/health-bar/client.lua",
+      "server": "/templates/luau/health-bar/server.lua"
+    },
+    {
+      "slug": "leaderboard",
+      "name": "Global Leaderboard",
+      "client": "/templates/luau/leaderboard/client.lua",
+      "server": "/templates/luau/leaderboard/server.lua"
+    },
+    {
+      "slug": "loading-screen",
+      "name": "Loading Screen",
+      "client": "/templates/luau/loading-screen/client.lua",
+      "server": "/templates/luau/loading-screen/server.lua"
+    },
+    {
+      "slug": "main-menu",
+      "name": "Main Menu",
+      "client": "/templates/luau/main-menu/client.lua",
+      "server": "/templates/luau/main-menu/server.lua"
+    },
+    {
+      "slug": "obby-start-screen",
+      "name": "Obby Start Screen",
+      "client": "/templates/luau/obby-start-screen/client.lua",
+      "server": "/templates/luau/obby-start-screen/server.lua"
+    },
+    {
+      "slug": "pet-shop",
+      "name": "Pet Shop",
+      "client": "/templates/luau/pet-shop/client.lua",
+      "server": "/templates/luau/pet-shop/server.lua"
+    },
+    {
+      "slug": "rpg-inventory",
+      "name": "RPG Inventory",
+      "client": "/templates/luau/rpg-inventory/client.lua",
+      "server": "/templates/luau/rpg-inventory/server.lua"
+    },
+    {
+      "slug": "settings",
+      "name": "Settings Menu",
+      "client": "/templates/luau/settings/client.lua",
+      "server": "/templates/luau/settings/server.lua"
+    },
+    {
+      "slug": "shop-ui",
+      "name": "Shop UI",
+      "client": "/templates/luau/shop-ui/client.lua",
+      "server": "/templates/luau/shop-ui/server.lua"
+    },
+    {
+      "slug": "simulator-hud",
+      "name": "Simulator HUD",
+      "client": "/templates/luau/simulator-hud/client.lua",
+      "server": "/templates/luau/simulator-hud/server.lua"
+    }
+  ]
+}

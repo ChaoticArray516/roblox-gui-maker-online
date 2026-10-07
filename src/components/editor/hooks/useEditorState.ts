@@ -9,7 +9,8 @@
  * Luau 生成委托 lib/luau-generator.ts（3F-08 完整实现，本 Wave 占位）。
  */
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import {
   type DeviceType,
@@ -19,17 +20,41 @@ import {
   getDefaultProperties,
 } from "@/lib/types";
 import { generateClientLuau } from "@/lib/luau-generator";
+import { getTemplateEditorTree } from "@/lib/template-editor-trees";
+import { TEMPLATES } from "@/lib/templates";
+import { createClient } from "@/lib/supabase/client";
+import { trackEvent } from "@/lib/analytics";
 
 interface ClipboardData {
   element: GUIElement;
   children: GUIElement[];
 }
 
+// SOP-3U-07: 画布草稿暂存（sessionStorage；OAuth round-trip / 离站场景兜底）
+const DRAFT_KEY = "editor_draft_v1";
+
 function createDefaultName(type: GUIElementType): string {
   return type;
 }
 
-function createInitialState(): EditorState {
+function createInitialState(templateSlug?: string | null): EditorState {
+  if (templateSlug) {
+    const tree = getTemplateEditorTree(templateSlug);
+    if (tree.rootId) {
+      return {
+        elements: tree.elements,
+        rootId: tree.rootId,
+        selectedId: null,
+        deviceType: "desktop",
+        zoom: 1,
+        previewMode: false,
+        history: [],
+        snapshots: [tree.elements],
+        historyIndex: 0,
+      };
+    }
+  }
+
   const rootId = uuidv4();
   const rootElement: GUIElement = {
     id: rootId,
@@ -55,8 +80,37 @@ function createInitialState(): EditorState {
 }
 
 export function useEditorState() {
-  const [state, setState] = useState<EditorState>(createInitialState);
+  const searchParams = useSearchParams();
+  const templateSlug = searchParams.get("template");
+  // SAVE-02: ?project= 与 ?template= 互斥（project 优先）——有 project 时初始空画布，
+  // 由下方 mount effect 异步恢复；ONB-02: 无 template 且无 project 时默认预载 main-menu。
+  const projectParam = searchParams.get("project");
+  const [state, setState] = useState<EditorState>(() =>
+    createInitialState(templateSlug ?? (projectParam ? null : "main-menu")),
+  );
   const clipboardRef = useRef<ClipboardData | null>(null);
+
+  // SAVE-01: 云端保存状态（随 context 下发，Toolbar Save 与 ?project= loader 共用）
+  const [projectId, setProjectId] = useState<string | null>(null);
+  // 3V-06: ?template= 载入时项目名 = 模板名（防 projects 表堆满 Untitled）；
+  // 裸 editor / ?project= 保持 Untitled——loader 与草稿恢复的既有写入点优先级更高
+  const [projectName, setProjectName] = useState<string>(
+    (templateSlug && TEMPLATES[templateSlug]?.name) ?? "Untitled GUI",
+  );
+  // SAVE-02: ?project= 加载降级提示（越权/不存在/解析失败时给用户可见反馈）
+  const [notice, setNotice] = useState<string | null>(null);
+  const projectLoadedRef = useRef(false);
+  // SOP-3X-07: ?project= 加载期标志——Canvas 空态提示在加载完成前不渲染（治空画布闪烁）
+  const [projectLoading, setProjectLoading] = useState(!!projectParam);
+
+  // SOP-3U-07: 草稿层状态（draftInfo 非空 → EditorShell 顶部提示条等用户确认）
+  const [draftInfo, setDraftInfo] = useState<{ savedAt: string } | null>(null);
+  const draftPayloadRef = useRef<string | null>(null);
+  const draftTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // pristine 引用守卫：初始 elements 引用不变 = 无编辑，不写垃圾草稿（StrictMode 双跑安全）
+  const pristineElementsRef = useRef<Record<string, GUIElement> | null>(null);
+  const suppressNextDraftRef = useRef(false);
+  const dirtyRef = useRef(false);
 
   const addElement = useCallback(
     (type: GUIElementType, parentId: string | null, overrides?: Partial<GUIElement>) => {
@@ -279,6 +333,249 @@ export function useEditorState() {
     }
   }, []);
 
+  // SAVE-02: ?project=<id> 恢复——RLS 自动限定本人；越权/不存在/解析失败 → 空画布 + 降级提示
+  useEffect(() => {
+    if (!projectParam || projectLoadedRef.current) return;
+    projectLoadedRef.current = true;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from("projects")
+          .select("id, name, gui_json")
+          .eq("id", projectParam)
+          .single();
+        if (cancelled) return;
+
+        const gui = (data as { gui_json?: unknown } | null)?.gui_json as
+          | { gui?: { elements?: unknown } }
+          | undefined;
+        const elements = gui?.gui?.elements;
+        const valid =
+          !error &&
+          Array.isArray(elements) &&
+          elements.some(
+            (el) =>
+              (el as { type?: string; parentId?: string | null }).type ===
+                "ScreenGui" &&
+              (el as { parentId?: string | null }).parentId === null,
+          );
+
+        if (!data || !valid) {
+          if (error) console.error("Failed to load project:", error);
+          setNotice(
+            "Could not open that project (it may not exist or belong to another account). Starting from a blank canvas.",
+          );
+          return;
+        }
+
+        importJSON(JSON.stringify(gui));
+        setProjectId(data.id);
+        setProjectName(
+          (data as { name?: string }).name?.trim() || "Untitled GUI",
+        );
+      } finally {
+        // SOP-3X-07: 加载结束（成功/失败/降级）统一放行空态渲染
+        if (!cancelled) setProjectLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectParam]);
+
+  // ── SOP-3U-07: 草稿层（纯新增，不改既有 ?project=/?template= 互斥逻辑）──
+
+  // 写入体 = exportJSON 形状 + meta（与 SAVE-02 loader 同一恢复模式）；全程 try-catch
+  const writeDraft = useCallback(() => {
+    try {
+      const payload = {
+        ...JSON.parse(exportJSON()),
+        meta: {
+          template: templateSlug,
+          projectId,
+          projectName,
+          savedAt: new Date().toISOString(),
+        },
+      };
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+    } catch {
+      // 存储不可用/超限等静默失败
+    }
+  }, [exportJSON, templateSlug, projectId, projectName]);
+
+  const clearDraft = useCallback(() => {
+    try {
+      sessionStorage.removeItem(DRAFT_KEY);
+    } catch {
+      // ignore
+    }
+    draftPayloadRef.current = null;
+    setDraftInfo(null);
+  }, []);
+
+  // 触发：elements 引用变更（覆盖 add/remove/update/move/reorder/paste/undo/redo/importJSON
+  // 全部路径，含改名 updateElement），800ms debounce 防拖拽高频写
+  useEffect(() => {
+    if (pristineElementsRef.current === null) {
+      pristineElementsRef.current = state.elements;
+      return;
+    }
+    if (state.elements === pristineElementsRef.current) return; // undo 到底回 pristine，不写
+    if (suppressNextDraftRef.current) {
+      suppressNextDraftRef.current = false;
+      return;
+    }
+    dirtyRef.current = true;
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    draftTimerRef.current = setTimeout(writeDraft, 800);
+    return () => {
+      if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    };
+  }, [state.elements, writeDraft]);
+
+  // 离站兜底：beforeunload 同步写（3U-02 整页跳转必触发），覆盖 debounce 窗口
+  useEffect(() => {
+    const flush = () => {
+      if (dirtyRef.current) writeDraft();
+    };
+    window.addEventListener("beforeunload", flush);
+    return () => window.removeEventListener("beforeunload", flush);
+  }, [writeDraft]);
+
+  // 恢复判定：?project=（云端权威）在场时不提示；?template= 仅决定基底内容，
+  // 模板之上的未保存编辑仍需提示条兜底（ANON-TEST 主路径：模板 → 编辑 → 登录 → 回来恢复）。
+  // 全在 useEffect（EditorShell 整体 ssr:false，无 hydration 问题）
+  useEffect(() => {
+    if (projectParam) return; // 云端项目优先，不提示
+    try {
+      const raw = sessionStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      const elements = (data as { gui?: { elements?: unknown } })?.gui?.elements;
+      const valid =
+        Array.isArray(elements) &&
+        elements.some(
+          (el) =>
+            (el as { type?: string; parentId?: string | null }).type === "ScreenGui" &&
+            (el as { parentId?: string | null }).parentId === null,
+        );
+      if (!valid) return;
+      draftPayloadRef.current = raw;
+      const savedAt = (data as { meta?: { savedAt?: unknown } })?.meta?.savedAt;
+      const info = { savedAt: typeof savedAt === "string" ? savedAt : "" };
+
+      // SOP-3X-08: pending_save 全量自动落库链（用户裁决③）——
+      // 已登录 + 标记在场 + 草稿有效 → 跳过确认条直接落库（先落库成功才恢复画布清草稿）
+      let pending = false;
+      try {
+        pending = sessionStorage.getItem("pending_save_v1") === "1";
+      } catch {
+        // 存储不可用按无标记处理
+      }
+      if (pending) {
+        (async () => {
+          const supabase = createClient();
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          if (!user) {
+            // 未登录回归（登录失败/同 tab 中途返回）→ 标记保留，走普通确认条
+            setDraftInfo(info);
+            return;
+          }
+          try {
+            const parsed = JSON.parse(raw) as {
+              meta?: { projectId?: unknown; projectName?: unknown };
+            };
+            const meta = parsed.meta;
+            const guiJson = { ...parsed } as Record<string, unknown>;
+            delete guiJson.meta;
+            const existingId =
+              typeof meta?.projectId === "string" && meta.projectId
+                ? meta.projectId
+                : null;
+            let savedId = existingId;
+            const savedName =
+              typeof meta?.projectName === "string" && meta.projectName.trim()
+                ? meta.projectName
+                : "Untitled GUI";
+            if (existingId) {
+              const { error } = await supabase
+                .from("projects")
+                .update({ gui_json: guiJson })
+                .eq("id", existingId);
+              if (error) throw error;
+            } else {
+              const { data: row, error } = await supabase
+                .from("projects")
+                .insert({ user_id: user.id, name: savedName, gui_json: guiJson })
+                .select("id")
+                .single();
+              if (error) throw error;
+              if (row) savedId = row.id as string;
+            }
+            // 落库成功才恢复画布 + 清草稿清标记（失败则草稿不丢，降级确认条）
+            // （内联 restoreDraft 逻辑——restoreDraft 声明在后方，前向引用过不了
+            //   React Compiler 的 TDZ 检查；meta 回填由下方 setProjectId/setProjectName 完成）
+            suppressNextDraftRef.current = true; // importJSON 触发的变更不立刻重写草稿
+            importJSON(raw);
+            clearDraft(); // 清除时机：落库成功（同 Toolbar :139 语义）
+            if (savedId) setProjectId(savedId);
+            if (savedName) setProjectName(savedName);
+            try {
+              sessionStorage.removeItem("pending_save_v1");
+            } catch {
+              // ignore
+            }
+            setNotice("Saved to cloud — find it in My Projects");
+            trackEvent("project_saved", { source: "pending_return" });
+          } catch (e) {
+            console.error("pending_save auto-save failed:", e);
+            try {
+              sessionStorage.removeItem("pending_save_v1");
+            } catch {
+              // ignore
+            }
+            setDraftInfo(info); // 降级回确认条路径（草稿未动，可手动 Restore + Save 重试）
+          }
+        })();
+        return;
+      }
+      setDraftInfo(info);
+    } catch {
+      // 解析失败等静默
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const restoreDraft = useCallback(() => {
+    const raw = draftPayloadRef.current;
+    if (!raw) return;
+    try {
+      const data = JSON.parse(raw);
+      // importJSON 触发的 elements 变更不应立刻把刚恢复的内容重写为草稿
+      suppressNextDraftRef.current = true;
+      importJSON(raw);
+      const meta = (data as { meta?: { projectId?: unknown; projectName?: unknown } })?.meta;
+      if (typeof meta?.projectId === "string" && meta.projectId) {
+        setProjectId(meta.projectId);
+      }
+      if (typeof meta?.projectName === "string" && meta.projectName.trim()) {
+        setProjectName(meta.projectName);
+      }
+    } catch (e) {
+      console.error("Failed to restore draft:", e);
+    }
+    clearDraft(); // 清除时机①：恢复成功
+  }, [importJSON, clearDraft]);
+
+  const discardDraft = clearDraft; // 清除时机③：Discard（清除时机②在 Toolbar 落库成功分支）
+
   const copyElement = useCallback(
     (id: string) => {
       const el = state.elements[id];
@@ -358,6 +655,11 @@ export function useEditorState() {
 
   return {
     state,
+    projectId,
+    projectName,
+    projectLoading,
+    notice,
+    draftInfo,
     actions: {
       addElement,
       removeElement,
@@ -376,6 +678,12 @@ export function useEditorState() {
       copyElement,
       pasteElement,
       duplicateElement,
+      setProjectId,
+      setProjectName,
+      setNotice,
+      restoreDraft,
+      discardDraft,
+      clearDraft,
       canUndo: state.historyIndex > 0,
       canRedo: state.historyIndex < state.snapshots.length - 1,
     },

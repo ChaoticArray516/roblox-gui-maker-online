@@ -3,16 +3,20 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FigmaToRobloxJsonLd } from "@/components/seo";
+import { FigmaToRobloxJsonLd, buildPageOpenGraph } from "@/components/seo";
+import { OG_PAGES } from "@/lib/og-pages";
+import { SUPPORT_EMAIL } from "@/lib/site-config";
+
+const OG = OG_PAGES["/figma-to-roblox"];
 
 export const metadata: Metadata = {
-  title: "Figma to Roblox Studio UI — Join the Waitlist",
-  description:
-    "A Figma-to-Roblox converter is in development. Join the waitlist to be notified when automatic component mapping, asset upload, and Studio plugin import are ready.",
+  title: OG.title,
+  description: OG.description,
   alternates: { canonical: "/figma-to-roblox" },
+  ...buildPageOpenGraph({ url: "/figma-to-roblox", ...OG }), // SOP-3W-02
 };
 
-const WAITLIST_EMAIL = "chaoticarray.rf516@gmail.com";
+const WAITLIST_EMAIL = SUPPORT_EMAIL;
 const WAITLIST_SUBJECT = "Notify me when the Figma to Roblox converter launches";
 
 const PAIN_POINTS = [
@@ -48,12 +52,12 @@ export default function FigmaToRobloxPage() {
             Coming soon
           </p>
           <h1 className="font-display text-4xl font-semibold tracking-tight text-text sm:text-5xl">
-            Join the Waitlist: Figma-to-Roblox Studio Converter
+            Convert Figma to Roblox Studio UI in One Click
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-text-muted">
-            The converter is not yet available. Sign up to be notified when
-            automatic Figma layer-to-Roblox-GUI mapping, asset upload, and Studio
-            plugin import go live.
+            The converter is not yet available. Join the waitlist to be notified
+            when automatic Figma layer-to-Roblox-GUI mapping, asset upload, and
+            Studio plugin import go live.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <a

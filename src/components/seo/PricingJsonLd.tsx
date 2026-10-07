@@ -6,7 +6,7 @@
  * 由 src/app/pricing/page.tsx 渲染（T2 接线）。
  */
 
-import { SITE_URL, SITE_DEFAULT_OG_IMAGE } from "@/lib/site-config";
+import { SITE_URL, SITE_DEFAULT_OG_IMAGE, SUPPORT_EMAIL } from "@/lib/site-config";
 import { FREE_PLAN, PRO_PLAN } from "@/lib/constants";
 import {
   MERCHANT_BRAND,
@@ -42,7 +42,7 @@ export function PricingJsonLd() {
       "@id": `${SITE_URL}/pricing/#product-pro`,
       name: "Roblox GUI Maker — Pro Plan",
       description:
-        "Unlimited AI generations, premium template library, priority Figma-to-Roblox import, Studio plugin Pro features, and priority support.",
+        "Unlimited AI generations, premium template library, priority Figma-to-Roblox import, and priority support.",
       image: [SITE_DEFAULT_OG_IMAGE],
       brand: MERCHANT_BRAND,
       offers: {
@@ -50,8 +50,8 @@ export function PricingJsonLd() {
         price: PRO_PLAN.priceUSD.toString(),
         priceCurrency: "USD",
         priceValidUntil: "2027-12-31",
-        availability: "https://schema.org/PreOrder",
-        url: "mailto:chaoticarray.rf516@gmail.com?subject=Notify%20me%20when%20Roblox%20GUI%20Maker%20Pro%20launches",
+        availability: "https://schema.org/InStock",
+        url: `${SITE_URL}/pricing`,
         seller: { "@id": `${SITE_URL}/#organization` },
         hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
         shippingDetails: MERCHANT_SHIPPING_DETAILS,
@@ -73,7 +73,7 @@ export function PricingJsonLd() {
           name: "How much does the Pro plan cost?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Pro will be $9.99 per month when subscriptions open. It will add unlimited AI generations, the premium template library, priority Figma import, Studio plugin Pro features, and priority email support.",
+            text: "Pro is $9.99 per month. It adds unlimited AI generations, the premium template library, priority Figma import, and priority email support.",
           },
         },
         {
@@ -81,7 +81,7 @@ export function PricingJsonLd() {
           name: "Can I cancel my Pro subscription anytime?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Once Pro subscriptions are available, you can cancel at any time. You'll retain Pro access until the end of your billing period, then drop to the Free plan automatically.",
+            text: "You can cancel your Pro subscription at any time. You'll retain Pro access until the end of your billing period, then drop to the Free plan automatically.",
           },
         },
         {
@@ -89,7 +89,7 @@ export function PricingJsonLd() {
           name: "Do you offer student or indie developer discounts?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes! We plan to offer a 50% discount for students with a valid .edu email and for indie developers who have earned less than $1,000 from their Roblox games in the past 12 months. Contact support to apply once Pro launches.",
+            text: "Yes! We offer a 50% discount for students with a valid .edu email and for indie developers who have earned less than $1,000 from their Roblox games in the past 12 months. Contact support to apply.",
           },
         },
         {
@@ -97,7 +97,7 @@ export function PricingJsonLd() {
           name: "What's your refund policy?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Once Pro subscriptions open, they will come with a 14-day money-back guarantee. Email chaoticarray.rf516@gmail.com within 14 days of your first charge and we'll refund in full — no questions asked. Marketplace template purchases are also eligible for a 14-day refund if the template is broken or significantly differs from its description.",
+            text: `Pro subscriptions come with a 14-day money-back guarantee. Email ${SUPPORT_EMAIL} within 14 days of your first charge and we'll refund in full — no questions asked. Marketplace template purchases are also eligible for a 14-day refund if the template is broken or significantly differs from its description.`,
           },
         },
       ],

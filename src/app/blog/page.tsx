@@ -3,13 +3,16 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Breadcrumb, BlogListJsonLd } from "@/components/seo";
+import { Breadcrumb, BlogListJsonLd, buildPageOpenGraph } from "@/components/seo";
+import { OG_PAGES } from "@/lib/og-pages";
+
+const OG = OG_PAGES["/blog"];
 
 export const metadata: Metadata = {
-  title: "Roblox GUI Maker Blog — Tips, Tutorials & Guides",
-  description:
-    "Roblox UI tips, Figma-to-Studio tutorials, AI Luau generation guides, and template deep dives from the Roblox GUI Maker team.",
+  title: OG.title,
+  description: OG.description,
   alternates: { canonical: "/blog" },
+  ...buildPageOpenGraph({ url: "/blog", ...OG }), // SOP-3W-02
 };
 
 const POSTS = [

@@ -3,13 +3,16 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Breadcrumb, GuidesListJsonLd } from "@/components/seo";
+import { Breadcrumb, GuidesListJsonLd, buildPageOpenGraph } from "@/components/seo";
+import { OG_PAGES } from "@/lib/og-pages";
+
+const OG = OG_PAGES["/guides"];
 
 export const metadata: Metadata = {
-  title: "Roblox GUI Tutorials & Guides (2026)",
-  description:
-    "Step-by-step Roblox GUI tutorials: fix scaling, master UIListLayout and UIGridLayout, build draggable frames, and export clean Luau.",
+  title: OG.title,
+  description: OG.description,
   alternates: { canonical: "/guides" },
+  ...buildPageOpenGraph({ url: "/guides", ...OG }), // SOP-3W-02
 };
 
 const GUIDES = [

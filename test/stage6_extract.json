@@ -1,0 +1,178 @@
+{
+  "dialogue-system": {
+    "filename": "template-dialogue-system.md",
+    "overview": {
+      "Template Name": "Dialogue System",
+      "Category": "Dialogue",
+      "Price": "Marketplace (Paid)",
+      "Layout": "Desktop",
+      "Style": "Cartoon / RPG",
+      "GUI Type": "ScreenGui"
+    },
+    "description": "An NPC dialogue UI with typewriter text, speaker portrait placeholder, and branching choice buttons. Designed for story-driven Roblox experiences with a charming cartoon aesthetic. Features smooth typewriter text animation, animated NPC portraits, player choice branching, and full dialogue tree support for complex narrative flows.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  },
+  "fps-hud": {
+    "filename": "template-fps-hud.md",
+    "overview": {
+      "Template Name": "FPS HUD",
+      "Category": "HUD",
+      "Price": "Marketplace (Paid)",
+      "Layout": "Desktop",
+      "Style": "Dark / Tactical",
+      "GUI Type": "ScreenGui"
+    },
+    "description": "A tactical FPS HUD with ammo counter, health bar, crosshair, and kill feed placeholder. Designed for performance-focused first-person shooter experiences on Roblox. Features a dark tactical aesthetic inspired by modern military shooters, with high-contrast UI elements that remain readable during intense gameplay.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  },
+  "leaderboard": {
+    "filename": "template-global-leaderboard.md",
+    "overview": {
+      "Template Name": "Global Leaderboard",
+      "Category": "Leaderboard",
+      "Price": "Free",
+      "Layout": "Desktop",
+      "Style": "Clean",
+      "Data Store": "OrderedDataStore"
+    },
+    "description": "A top-10 global leaderboard GUI with player name, avatar placeholder, and score. Auto-refreshes every minute. This template provides a production-ready leaderboard system that displays the highest-scoring players across your entire Roblox game. It features a clean, modern design with automatic data synchronization, smooth entry animations, and a responsive layout that works on all screen sizes.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  },
+  "health-bar": {
+    "filename": "template-health-bar.md",
+    "overview": {
+      "Template Name": "Health Bar",
+      "Category": "Health Bar",
+      "Price": "Free",
+      "Layout": "Mobile",
+      "Style": "Cartoon",
+      "Tween": "TweenService (damage feedback, low-health pulse)"
+    },
+    "description": "A compact health bar with tweened fill, damage flash, and low-health pulse. Works for any humanoid. This template provides a responsive, animated health bar that tracks player health with smooth fill animations, visual damage feedback with screen flash effects, and an urgent pulsing animation when health drops below a critical threshold. Designed with a cartoon aesthetic optimized for mobile devices.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  },
+  "loading-screen": {
+    "filename": "template-loading-screen.md",
+    "overview": {
+      "Template Name": "Loading Screen",
+      "Category": "Loading Screen",
+      "Price": "Free",
+      "Layout": "Desktop",
+      "Style": "Clean",
+      "Features": "Progress Bar, Rotating Tips, Fade-Out Animation"
+    },
+    "description": "A loading screen with progress bar, rotating gameplay tips, and fade-out once loading is complete. This template provides a polished, professional loading experience that keeps players engaged while assets load. Features a smooth animated progress bar, helpful rotating gameplay tips to educate players, and an elegant fade-out transition when loading completes.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  },
+  "main-menu": {
+    "filename": "template-main-menu.md",
+    "overview": {
+      "Template Name": "Main Menu",
+      "Category": "Menu",
+      "Price": "Free",
+      "Layout": "Desktop / Mobile / Tablet (Auto-fit)",
+      "Style": "Clean Theme"
+    },
+    "description": "A polished main menu with animated play button, settings shortcut, store link, and social icons. Features a subtle UIGradient background, smooth Tween animations, and auto-fitting layout that adapts to mobile, tablet, and desktop screens. Fits any genre from simulators to RPGs to obbies.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  },
+  "obby-start-screen": {
+    "filename": "template-obby-start-screen.md",
+    "overview": {
+      "Template Name": "Obby Start Screen",
+      "Category": "Menu",
+      "Price": "Free",
+      "Layout": "Mobile",
+      "Style": "Cartoon / Colorful",
+      "GUI Type": "ScreenGui"
+    },
+    "description": "A colorful obby start screen with start button, rules panel, shop link, and best-time display. Designed with a vibrant cartoon aesthetic optimized for mobile devices. Features animated UI elements, player statistics, level selection preview, and social features like friend invites. Perfect for obstacle course (obby) games, parkour experiences, and timed challenge games on Roblox.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  },
+  "pet-shop": {
+    "filename": "template-pet-shop.md",
+    "overview": {
+      "Template Name": "Pet Shop",
+      "Category": "Shop",
+      "Price": "Marketplace (Paid)",
+      "Layout": "Desktop",
+      "Style": "Cartoon Theme"
+    },
+    "description": "A cartoony pet shop UI with rarity badges, buy buttons, coin balance, and equipped-pet preview panel. Designed for pet collection games, simulators, and RPGs where players can browse, purchase, and equip companion pets. Features 6 pet cards with visual rarity indicators, animated purchase flow, and a dedicated preview panel for the currently equipped pet.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  },
+  "rpg-inventory": {
+    "filename": "template-rpg-inventory.md",
+    "overview": {
+      "Template Name": "RPG Inventory",
+      "Category": "Inventory",
+      "Price": "Free",
+      "Layout": "Desktop",
+      "Style": "Dark Theme"
+    },
+    "description": "A slot-based RPG inventory GUI for Roblox with drag-and-drop, equip slots, item rarity colors, and tooltips. This template provides a complete inventory system that supports item collection, equipment management, drag-and-drop interactions, rarity-based color coding, and informative tooltips on hover. It is designed for RPG, adventure, and survival games where players collect and manage items.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  },
+  "settings": {
+    "filename": "template-settings-menu.md",
+    "overview": {
+      "Template Name": "Settings Menu",
+      "Category": "Menu",
+      "Price": "Free",
+      "Layout": "Desktop",
+      "Style": "Dark",
+      "Components": "Volume Sliders, Toggle Switches, UIListLayout"
+    },
+    "description": "A settings panel with volume sliders, fullscreen toggle, music mute, and language placeholder. Clean UIListLayout. This template provides a comprehensive settings system with smooth slider interactions, animated toggle switches, and a modular design that makes adding new settings effortless. Features a sleek dark theme with accent-colored interactive elements.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  },
+  "shop-ui": {
+    "filename": "template-shop-ui.md",
+    "overview": {
+      "Template Name": "Shop UI",
+      "Category": "Shop",
+      "Price": "Free",
+      "Layout": "Desktop",
+      "Style": "Bright Theme"
+    },
+    "description": "A general-purpose shop GUI with category tabs, item grid, and purchase prompts wired to MarketplaceService. Supports both Gamepasses and Developer Products. Features a clean bright design with animated purchase flow, category filtering, and detailed item descriptions. Ready for monetization out of the box.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  },
+  "simulator-hud": {
+    "filename": "template-simulator-hud.md",
+    "overview": {
+      "Template Name": "Simulator HUD",
+      "Category": "HUD",
+      "Price": "Free",
+      "Layout": "Mobile",
+      "Style": "Bright / Colorful",
+      "GUI Type": "ScreenGui"
+    },
+    "description": "A simulator-style HUD with click counter, rebirth badge, pet count, and currency tracker. Designed with a bright and readable aesthetic optimized for mobile devices. Perfect for clicker simulators, pet collection games, tycoon-style experiences, and any Roblox game that tracks incremental progress with satisfying visual feedback.",
+    "features": [],
+    "hasClient": true,
+    "hasServer": true
+  }
+}

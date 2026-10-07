@@ -30,11 +30,15 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files (真实 key 禁止入库；.env.local.example 是文档应入库)
 .env*
+!.env.local.example
 
 # vercel
 .vercel
+
+# faq-engine lint cache (本地生成的 FAQ JSON，供 build_jsonld.py 校验)
+scripts/.faq-build-cache/
 
 # typescript
 *.tsbuildinfo

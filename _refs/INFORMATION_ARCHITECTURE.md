@@ -25,7 +25,7 @@
 | 层级 | 路由 | 页面类型 | H1 文案 | 目标关键词 | Schema 类型 | 渲染模式 | 内链指向 | 索引策略 |
 |------|------|---------|---------|-----------|------------|---------|---------|---------|
 | L1 | `/` | 首页/落地页 | Roblox GUI Maker: Visually Build & Export Clean Luau in Seconds | `roblox gui maker`（主）/ `roblox ui maker no coding`（次，写入描述） | WebSite + SoftwareApplication + Organization | SSG | `/editor`, `/templates`, `/use-cases`, `/guides`, `/pricing`, `/plugin` | index, follow |
-| L1 | `/editor` | 在线编辑器（工具核心） | Build Your Roblox GUI Online — Drag, Drop, Done | `roblox ui maker drag and drop` | SoftwareApplication + FAQPage + HowTo | CSR | `/templates`, `/plugin`, `/docs`, `/faq` | index, nofollow |
+| L1 | `/editor` | 在线编辑器（工具核心） | Build Your Roblox GUI Online — Drag, Drop, Done | `roblox ui maker drag and drop` | SoftwareApplication + FAQPage + HowTo | CSR | `/templates`, `/plugin`, `/docs`, `/faq` | index, follow |
 | L1 | `/figma-to-roblox` | 功能落地页 | Convert Figma to Roblox Studio UI in One Click | `roblox figma to studio` | SoftwareApplication + HowTo | SSG | `/editor`, `/plugin`, `/guides`, `/blog` | index, follow |
 | L1 | `/templates` | 模板市场列表 | Free & Premium Roblox GUI Templates (Ready-to-Play) | `roblox gui templates free`（主战场） | WebSite + CollectionPage + FAQPage | ISR (3600s) | `/templates/[slug]`, `/use-cases`, `/pricing`, `/editor` | index, follow |
 | L2 | `/templates/[slug]` | 模板详情页 | [Template Name] Roblox GUI Template with [Key Feature] | `[模板名] roblox gui template` | Product + SoftwareApplication + ImageGallery + BreadcrumbList | ISR (3600s) | `/templates`, `/editor?template={slug}`, 同类模板 | index, follow |
@@ -45,6 +45,8 @@
 | L2 | `/dashboard/projects` | 用户项目列表 | （不需 SEO） | （不需 SEO） | （无 Schema） | CSR | `/editor/[project_id]` | noindex, nofollow |
 | L2 | `/dashboard/settings` | 账号设置 | （不需 SEO） | （不需 SEO） | （无 Schema） | CSR | 面板内部链接 | noindex, nofollow |
 | L2 | `/dashboard/billing` | 账单/订阅管理 | （不需 SEO） | （不需 SEO） | （无 Schema） | CSR | `/pricing` | noindex, nofollow |
+
+> **修订记录**：2026-10-02 `/editor` 索引策略 nofollow→follow（SOP-3V-03 规格变更；依据 cvr_impv_09/10 两轮复查建议 + 2026-10-01 用户裁决——转化页权重应经内链流向 /templates 与模板详情页；robots.ts AI 爬虫规则维持屏蔽不变）。
 
 > **关键词分工原则（消除 cannibalization）**：
 > - **首页 `/`** 独占品牌核心词 `roblox gui maker`；`roblox ui maker no coding` 降为描述次要词，不再与博客 W1 抢主词。
@@ -123,6 +125,13 @@ app/
 ├── sitemap.ts                → /sitemap.xml
 └── globals.css
 ```
+
+> **SOP-3K-01 偏离登记（2026-07-19 用户审批）**：Phase 3K Hybrid 策略解锁 3 个新路由，22 -> 25 条：
+> - `/script-generator`（SSG A 级，index,follow）- `src/app/script-generator/page.tsx`
+> - `/ai-generator`（SSG A 级，index,follow）- `src/app/ai-generator/page.tsx`
+> - `/compare/[slug]`（SSG A 级动态，generateStaticParams）- `src/app/compare/[slug]/page.tsx` + `/compare/page.tsx` 枢纽
+>
+> 其余功能词（`/free`、`/no-code`、`/export`、`/preview`、`/visual-editor`、`/screen-gui-generator`、`/help`）一律并入现有路由 section，不新增路由。详见 MASTER_SOP 附录 F。
 
 ---
 

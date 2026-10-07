@@ -3,13 +3,16 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Breadcrumb, UseCasesListJsonLd } from "@/components/seo";
+import { Breadcrumb, UseCasesListJsonLd, buildPageOpenGraph } from "@/components/seo";
+import { OG_PAGES } from "@/lib/og-pages";
+
+const OG = OG_PAGES["/use-cases"];
 
 export const metadata: Metadata = {
-  title: "How to Make a GUI for Any Roblox Game",
-  description:
-    "Roblox GUI design guides by game type — simulator, FPS, roleplay, tycoon, and obby. Build the right HUD, menu, or shop for your genre.",
+  title: OG.title,
+  description: OG.description,
   alternates: { canonical: "/use-cases" },
+  ...buildPageOpenGraph({ url: "/use-cases", ...OG }), // SOP-3W-02
 };
 
 const USE_CASES = [

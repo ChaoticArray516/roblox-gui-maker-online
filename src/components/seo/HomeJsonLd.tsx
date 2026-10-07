@@ -23,14 +23,6 @@ export function HomeJsonLd() {
         "AI-powered Roblox GUI generator with drag-and-drop editor, Luau code generation, and a planned Figma-to-Studio import feature for Roblox developers.",
       publisher: { "@id": `${SITE_URL}/#organization` },
       inLanguage: "en-US",
-      potentialAction: {
-        "@type": "SearchAction",
-        target: {
-          "@type": "EntryPoint",
-          urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
-        },
-        "query-input": "required name=search_term_string",
-      },
     },
     {
       "@type": "Organization",
@@ -39,15 +31,12 @@ export function HomeJsonLd() {
       url: SITE_URL,
       logo: {
         "@type": "ImageObject",
-        url: ORG_LOGO,
+        url: `${ORG_LOGO}?v=2`,
         width: 512,
         height: 512,
       },
-      sameAs: [
-        "https://twitter.com/robloxguimaker",
-        "https://youtube.com/@robloxguimaker",
-        "https://discord.gg/robloxguimaker",
-      ],
+      // Creem 合规(2026-09): 原 sameAs 指向的社媒账号不存在,已移除;
+      // 账号创建后再恢复真实 URL。
     },
     {
       "@type": "SoftwareApplication",
@@ -66,6 +55,8 @@ export function HomeJsonLd() {
       featureList: [
         "Drag-and-Drop GUI Builder with smart alignment",
         "AI Luau Script Generator from natural language prompts",
+        "Free Roblox GUI maker with 50 AI credits per month",
+        "No-code Roblox GUI creator - design visually without Luau",
         "Planned: Figma to Roblox Studio import",
         "Template marketplace with pre-built UI components",
         "Planned: Roblox Studio plugin for direct asset sync",

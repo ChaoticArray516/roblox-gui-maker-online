@@ -51,7 +51,7 @@ export function TemplatesListJsonLd() {
           name: "How do I import a template into my Roblox game?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Click 'Open in Web Editor' on any template page, customize the layout, then click Export to copy the Luau script into StarterGui. A Studio plugin for one-click import is in development — join the waitlist to be notified.",
+            text: "Click 'Open in Web Editor' on any template page, customize the layout, then click Export to copy the Luau script into StarterGui. A Studio plugin for one-click import is planned — join the waitlist to be notified.",
           },
         },
       ],

@@ -1,11 +1,39 @@
 import { SITE_URL } from "@/lib/site-config";
+import type { FAQItem } from "@/lib/types";
 
 export const POST_SLUGS = [
   "best-roblox-ui-maker-no-coding",
   "convert-figma-to-roblox-studio-ui",
   "top-10-free-roblox-gui-templates",
+  "roblox-shop-gui-tutorial",
+  "roblox-scale-vs-offset-guide",
+  "figma-to-roblox-complete-guide",
+  "roblox-inventory-gui-tutorial",
+  "how-to-create-roblox-gui",
+  "roblox-gui-design-tutorial",
+  "roblox-hud-gui-tutorial",
+  "roblox-gui-animation-tutorial",
+  "roblox-menu-script-tutorial",
+  "roblox-gui-luau-code-snippets",
+  "roblox-gui-scaling-problems",
+  "roblox-settings-menu-template",
+  "roblox-leaderboard-gui",
+  "how-to-make-roblox-gui-look-good",
 ] as const;
 export type PostSlug = (typeof POST_SLUGS)[number];
+
+export type BlogSection =
+  | { type: "heading"; level: 2 | 3; text: string }
+  | { type: "text"; body: string }
+  | {
+      type: "code";
+      language: string;
+      code: string;
+      filename?: string;
+      cta?: { variant: "primary" | "secondary" | "editor" | "template" | "waitlist" | "next"; href: string; label: string };
+    }
+  | { type: "faq"; items: FAQItem[] }
+  | { type: "list"; items: string[]; ordered?: boolean };
 
 export interface BlogPostData {
   slug: PostSlug;
@@ -17,57 +45,1804 @@ export interface BlogPostData {
   authorName: string;
   imageUrl: string;
   keywords: string[];
+  /** 主关键词（content-check 用，SOP-4） */
+  targetKeyword?: string;
+  /** 结构化正文（优先于 content 渲染，SOP-4 P0） */
+  sections?: BlogSection[];
 }
 
 export const POSTS: Record<PostSlug, BlogPostData> = {
   "best-roblox-ui-maker-no-coding": {
     slug: "best-roblox-ui-maker-no-coding",
-    title: "The Best Roblox UI Maker Without Coding in 2026",
+    title: "Best Roblox UI Maker No Coding 2026 Guide",
     description:
-      "A comparison of visual Roblox UI builders and why controllable AI beats black-box generators for real game projects.",
-    content: `Visual Roblox UI builders have come a long way. In 2026, the best tools combine a drag-and-drop canvas with AI that exports editable Luau, so you are never locked into generated code you cannot change.
-
-Roblox GUI Maker keeps you in control: every ScreenGui, Frame, TextButton, and layout object is visible on the canvas and editable after generation. You can tweak Scale/Offset, anchor points, colors, and Z-index without touching code.
-
-For creators who want to ship fast, this means less time in Studio and more time tuning gameplay. The free tier includes 50 AI generation credits per month and full access to the template library, making it easy to test before upgrading.`,
+      "Looking for the best Roblox UI maker no coding 2026 offers? This visual builder exports editable Luau, ships free credits, and beats black-box AI for games.",
+    targetKeyword: "best roblox ui maker",
     publishedAt: "2026-06-20",
-    modifiedAt: "2026-06-20",
+    modifiedAt: "2026-07-21",
     authorName: "Roblox GUI Maker Team",
     imageUrl: `${SITE_URL}/blog/best-roblox-ui-maker-no-coding.webp`,
     keywords: ["best roblox ui maker no coding 2026", "roblox gui maker", "roblox ui builder"],
+    content: `The best Roblox UI maker no coding 2026 offers is one that turns a prompt into editable Luau you actually control. Black-box AI generators spit out code you cannot change. A visual builder with controllable AI exports every ScreenGui, Frame, and TextButton so you can tweak Scale, anchor points, and colors after generation.
+
+For creators who want to ship fast, this means less time in Studio and more time tuning gameplay. The free tier includes 50 AI generation credits per month and full access to the template library, so you can test a shop GUI, inventory, or HUD before upgrading.
+
+Every generated layout uses Scale-based sizing, so the UI works on a 1920px monitor and a 375px phone without manual fixes. You export clean Luau, paste it into StarterGui, and keep iterating in the web editor or Studio.`,
+    sections: [
+      { type: "heading", level: 2, text: "Why a no-code UI maker beats hand-writing Luau" },
+      {
+        type: "text",
+        body: "Hand-writing a Roblox GUI means creating each ScreenGui, Frame, and TextLabel in Studio, typing UDim2 values, pressing Play, checking the layout, and repeating. A no-code UI maker collapses that loop into a prompt and a canvas. You describe the menu you want, the AI generates the full object hierarchy, and you refine it visually before exporting. The exported Luau is clean and editable, not a black box you cannot touch.",
+      },
+      { type: "heading", level: 2, text: "What you can build without coding" },
+      {
+        type: "text",
+        body: "The same builder handles every common UI piece: a shop GUI with UIGridLayout and MarketplaceService prompts, an inventory with drag-and-drop and DataStore persistence, a HUD with a Tween health bar and coin counter, a main menu with page switching, and a settings panel with volume sliders. You start from a template or a prompt, edit the canvas, and export. No Luau knowledge is required to get a working layout, but the code is there if you want to extend it.",
+      },
+      { type: "heading", level: 2, text: "What a generated export looks like" },
+      {
+        type: "text",
+        body: "The export is plain Luau you can read and change. Below is the skeleton of a generated main menu panel, the kind the builder produces from a single prompt.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "StarterGui/MainMenu (LocalScript)",
+        code: `-- Generated by Roblox GUI Maker - edit freely
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "MainMenu"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local panel = Instance.new("Frame")
+panel.Size = UDim2.new(0.4, 0, 0.6, 0)
+panel.Position = UDim2.new(0.5, 0, 0.5, 0)
+panel.AnchorPoint = Vector2.new(0.5, 0.5)
+panel.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+panel.Parent = gui
+
+local playButton = Instance.new("TextButton")
+playButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+playButton.Position = UDim2.new(0.1, 0, 0.2, 0)
+playButton.Text = "Play"
+playButton.Parent = panel`,
+      },
+      { type: "heading", level: 2, text: "Editing after generation" },
+      {
+        type: "text",
+        body: "The point of controllable AI is that generation is the start, not the end. After the builder exports the Luau, you can change the panel color, swap the Play button for an image button, add a settings sub-menu, or wire the button to a RemoteEvent. Because the code is readable and uses Scale-based sizing, your edits survive on mobile. A black-box generator that hides the code cannot do this, which is why editable exports matter for real game projects. This is what separates a tool you outgrow from one you keep using across a project's lifetime. As your game grows, the menu needs a settings page, the shop needs a currency selector, the HUD needs a new stat, and you can add each by editing the exported Luau or by re-prompting the builder and merging the new output into your existing hierarchy. The free tier covers a real first version of every common UI piece, so the upgrade decision is based on generation volume, not on whether the tool can handle your next feature. That matters for teams who cannot afford to rebuild their UI stack every few months, and for solo developers who need one tool that scales from prototype to production.",
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "Is this the best Roblox UI maker for beginners?", answer: "Yes. The canvas-and-prompt workflow needs no Luau knowledge to produce a working layout, and the free tier gives 50 AI credits per month plus the full template library, so a beginner can ship a shop or menu before paying anything." },
+          { question: "Why is this the best Roblox UI maker for no-code?", answer: "It exports editable Luau instead of hiding the code. You get the speed of AI generation and the control of hand-editing, so you are never stuck with output you cannot change when the game requirements shift." },
+          { question: "How many free credits do I get?", answer: "The free tier includes 50 AI generation credits per month and full access to the template library. That is enough to build and test a shop GUI, inventory, and HUD before deciding whether to upgrade." },
+          { question: "Does the export work on mobile?", answer: "Yes. Generated layouts use Scale-based sizing and AnchorPoint centering, so the same UI fits a 1920px monitor and a 375px phone without manual fixes. You can also preview on a mobile frame before exporting." },
+          { question: "Can I import the Luau into Studio?", answer: "Yes. Export the Luau, paste it into a LocalScript under StarterGui, and the GUI renders in Studio. From there you can keep editing in Studio or back in the web editor." },
+        ],
+      },
+    ],
   },
   "convert-figma-to-roblox-studio-ui": {
     slug: "convert-figma-to-roblox-studio-ui",
-    title: "Figma to Roblox Studio UI Converter — Coming Soon",
+    title: "Roblox Figma to Studio Converter (Coming Soon)",
     description:
-      "A Figma-to-Roblox converter is in development. Join the waitlist to get notified when automatic component mapping, asset upload, and Studio plugin import are ready.",
-    content: `Moving a Figma design into Roblox Studio usually means exporting images, copying Asset IDs, and recreating layouts by hand. A Figma-to-Roblox converter automates that busywork — and we are building one.
-
-When it launches, you will be able to paste a public Figma file URL. The converter will read frames and components, map them to Roblox GUI objects, and upload image layers to your Roblox library. It will convert position and size values into Scale/Offset pairs that stay responsive across devices.
-
-Once the conversion is done, the Roblox GUI Maker Studio plugin (also in development) will import the generated UI into StarterGui. You can then edit it further in Studio or in the web editor.
-
-Join the waitlist at roblox-gui-maker.online/figma-to-roblox to be notified when the converter and plugin are ready.`,
+      "A Roblox Figma to Studio converter is planned. It will auto-map Figma frames to GUI objects, upload assets, and import via plugin. Join the waitlist.",
+    targetKeyword: "roblox figma to studio",
     publishedAt: "2026-06-20",
-    modifiedAt: "2026-06-20",
+    modifiedAt: "2026-07-21",
     authorName: "Roblox GUI Maker Team",
     imageUrl: `${SITE_URL}/blog/convert-figma-to-roblox-studio-ui.webp`,
     keywords: ["roblox figma to studio", "figma to roblox", "roblox ui import"],
+    content: `Moving a Figma design into Roblox Studio usually means exporting images, copying Asset IDs, and recreating layouts by hand. A smooth Roblox Figma to Studio workflow is what most teams want, and we are building a converter to automate it.
+
+When it launches, you will paste a public Figma file URL. The converter will read frames and components, map them to Roblox GUI objects, and upload image layers to your Roblox library. It will convert position and size values into Scale and Offset pairs that stay responsive across devices.
+
+Until the converter ships, the manual path works but eats hours per screen. Join the waitlist at roblox-gui-maker.online/figma-to-roblox to be notified when the converter and the Studio plugin are ready.`,
+    sections: [
+      { type: "heading", level: 2, text: "What the converter will do" },
+      {
+        type: "text",
+        body: "The converter reads a Figma file and produces a Roblox GUI hierarchy. Each Figma frame becomes a Frame, text layers become TextLabels, and image layers become ImageLabels with their assets uploaded to your Roblox account. Position and size are translated into UDim2 values using Scale, so the imported layout responds to different screen sizes the way a hand-built Roblox GUI would.",
+      },
+      { type: "heading", level: 2, text: "The manual workflow today" },
+      {
+        type: "text",
+        body: "Without a converter, the Roblox Figma to Studio path is a copy-paste grind. You export each layer as a PNG, upload it to Roblox, copy the Asset ID, create an ImageLabel in Studio, paste the ID, and then position the element by typing UDim2 values until it matches the Figma frame. For a menu with 20 elements, that is an hour of busywork per screen, and any layout change means repeating the loop. The worst part is not the first pass but the revisions. When a designer tweaks the Figma file, you have to redo the asset exports, re-upload, and re-position every changed element, because there is no link between the Figma frame and the Roblox ImageLabel. Teams end up with two sources of truth that drift apart: the Figma file the designer keeps editing, and the Studio hierarchy the developer manually copied. A converter kills that drift by reading the Figma file directly, so the Roblox hierarchy reflects the latest Figma frame on every import. Until then, the practical move is to freeze the Figma file before starting the manual copy, and to keep a spreadsheet mapping each Figma layer name to its Roblox Asset ID so re-uploads stay traceable. Some teams also script the repetitive parts: a Studio plugin that bulk-creates ImageLabels from a list of Asset IDs can cut the busywork in half, even before a full Figma converter ships. The manual path works, but it is the kind of work that gets cut first when a deadline moves, which is why a converter is worth waiting for.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Manual Figma-to-Roblox import (today)",
+        code: `-- Today: recreate a Figma frame by hand in Luau
+local gui = Instance.new("ScreenGui")
+gui.ResetOnSpawn = false
+gui.Parent = player.PlayerGui
+
+-- Each Figma image layer becomes an ImageLabel with a manually uploaded asset
+local bg = Instance.new("ImageLabel")
+bg.Image = "rbxassetid://1234567890" -- copied from Roblox asset upload
+bg.Size = UDim2.new(0.6, 0, 0.4, 0)  -- typed to match the Figma frame
+bg.Position = UDim2.new(0.2, 0, 0.3, 0)
+bg.BackgroundTransparency = 1
+bg.Parent = gui`,
+      },
+      { type: "heading", level: 2, text: "What the plugin import will automate" },
+      {
+        type: "text",
+        body: "Once the converter generates the GUI hierarchy, the Roblox GUI Maker Studio plugin (also planned) will import it straight into StarterGui. You will not need to copy Luau or paste Asset IDs. The plugin creates the ScreenGui, Frames, and ImageLabels in your place, with assets already wired, so you can open Studio and start editing a layout that matches your Figma file.",
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "When will the Roblox Figma to Studio converter launch?", answer: "It is in active development. Join the waitlist at roblox-gui-maker.online/figma-to-roblox and you will get an email the day the converter and the Studio plugin are ready to use." },
+          { question: "Is the Roblox Figma to Studio converter free?", answer: "Pricing will be announced closer to launch. Waitlist members get early access and a free trial period to test the converter on real Figma files before paying." },
+          { question: "Will the converter upload my Figma images automatically?", answer: "Yes. Image layers in your Figma file are uploaded to your Roblox account and wired into ImageLabels, so you do not copy Asset IDs by hand. Text layers become TextLabels and frames become Frames." },
+          { question: "Does the converter keep the design responsive?", answer: "Yes. Position and size from Figma are translated into UDim2 values using Scale, so the imported layout resizes across devices instead of breaking on a phone like a fixed-pixel layout would." },
+          { question: "Do I need the Studio plugin to use the converter?", answer: "The converter generates the GUI hierarchy and assets; the plugin imports that into StarterGui in one click. You can also export Luau from the converter and paste it manually if you prefer not to use the plugin." },
+        ],
+      },
+    ],
   },
   "top-10-free-roblox-gui-templates": {
     slug: "top-10-free-roblox-gui-templates",
-    title: "Top 10 Free Roblox GUI Templates for Your Game",
+    title: "Top 10 Roblox GUI Templates Free to Use (2026)",
     description:
-      "A curated list of free Roblox GUI templates — inventories, shops, HUDs, leaderboards, and more — with real Luau logic.",
-    content: `Starting from a template saves hours. The best free Roblox GUI templates include not just visuals, but working Luau for interactions, data persistence, and layout logic.
-
-Our favorites include an RPG inventory with drag-and-drop and DataStore persistence, a simulator HUD with click counter and rebirth badge, a global leaderboard powered by OrderedDataStore, and a settings panel with volume sliders and toggles.
-
-Every template can be opened in the web editor, customized visually, and exported as clean Luau for your game.`,
+      "Ten Roblox GUI templates free to use: inventory, shop, HUD, leaderboard, settings, loading screen, and more, each with working Luau you can edit and export.",
+    targetKeyword: "roblox gui templates free",
     publishedAt: "2026-06-20",
-    modifiedAt: "2026-06-20",
+    modifiedAt: "2026-07-21",
     authorName: "Roblox GUI Maker Team",
     imageUrl: `${SITE_URL}/blog/top-10-free-roblox-gui-templates.webp`,
     keywords: ["roblox gui templates free", "free roblox ui templates", "roblox inventory template"],
+    content: `Starting from a template saves hours, and these Roblox GUI templates free to use ship with working Luau, not just visuals. Each one covers a common pattern: inventory, shop, HUD, leaderboard, settings, and more. You open a template in the web editor, customize the colors and layout, and export clean Luau into Studio.
+
+The list below covers ten templates that fit most game genres. Every template uses Scale-based sizing so it works on mobile, and the Luau is readable so you can extend it with your own game logic.`,
+    sections: [
+      { type: "heading", level: 2, text: "The 10 templates" },
+      {
+        type: "text",
+        body: "1. RPG Inventory: a slot grid with UIGridLayout, drag-and-drop, rarity borders, and DataStore persistence. 2. Shop GUI: an item grid with category tabs and MarketplaceService purchase prompts. 3. Simulator HUD: a click counter, rebirth badge, and coin display. 4. Global Leaderboard: top-10 ranking powered by OrderedDataStore with auto-refresh. 5. Settings Menu: volume sliders, graphics toggles, and keybinds with DataStore save. 6. Loading Screen: a branded splash with a progress bar that fades out. 7. FPS HUD: ammo counter, health bar, and crosshair. 8. Tycoon UI: money display, purchase buttons, and an owner gate. 9. Dialogue System: a textbox with portrait and choice buttons. 10. Obby Start Screen: a Play button, level select, and best-time display. Each template is a starting point, not a finished piece, so expect to swap colors, fonts, and copy to match your game's theme before shipping. The Luau in every template is written to be readable, so a developer can trace how the slot grid populates or how the purchase flow validates before customizing it. If your game needs a pattern none of the ten templates cover, start from the closest match and add the missing piece in the editor, then export. The templates also work as a learning resource: reading the exported Luau of the shop or inventory template teaches the standard Roblox patterns for purchases and persistence, which you can then apply to a custom UI. Most teams pick two or three templates as their base and branch from there as the game grows, adding a new screen by duplicating an existing template and re-skinning it rather than starting from a blank canvas. Because every template uses Scale-based sizing and UIGridLayout or UIListLayout for structure, a template built for a phone-sized shop panel scales up to a desktop layout without rewriting the Luau. That is the main reason starting from a template beats hand-placing elements in Studio: the responsive sizing is already correct, so your effort goes into the look and the game logic instead of fighting UDim2 values.",
+      },
+      { type: "heading", level: 2, text: "What a template export looks like" },
+      {
+        type: "text",
+        body: "Every template exports the same kind of readable Luau. Below is the skeleton of the inventory template, showing the slot grid setup you can edit after exporting.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Inventory template skeleton",
+        code: `-- Inventory template (from Roblox GUI templates free library)
+local gui = Instance.new("ScreenGui")
+gui.ResetOnSpawn = false
+gui.Parent = player.PlayerGui
+
+local panel = Instance.new("Frame")
+panel.Size = UDim2.new(0.5, 0, 0.6, 0)
+panel.Position = UDim2.new(0.25, 0, 0.2, 0)
+panel.Parent = gui
+
+local grid = Instance.new("ScrollingFrame")
+grid.Size = UDim2.new(1, 0, 0.85, 0)
+grid.Parent = panel
+
+local layout = Instance.new("UIGridLayout")
+layout.CellSize = UDim2.fromOffset(120, 120)
+layout.CellPadding = UDim2.fromOffset(8, 8)
+layout.Parent = grid`,
+      },
+      { type: "heading", level: 2, text: "How to customize a template" },
+      {
+        type: "text",
+        body: "Open any template in the web editor and the canvas loads the full layout. Change the panel color, swap fonts, resize the grid cells, or add new buttons in the properties panel. The Luau regenerates as you edit, so you export a version that matches your game's art direction. Because the templates use Scale-based sizing, your customizations survive on mobile without extra work.",
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "Are these Roblox GUI templates free to use in published games?", answer: "Yes. Every template in the library is free to open, customize, and export. You can ship them in published games on any tier, including the free plan." },
+          { question: "Can I edit these Roblox GUI templates free of Luau knowledge?", answer: "Yes. The web editor lets you change colors, sizes, and layout on a canvas without touching code. The Luau regenerates from your edits, so you export a customized version without writing Luau by hand." },
+          { question: "Do the templates work on mobile?", answer: "Yes. All ten templates use Scale-based sizing and AnchorPoint centering, so they reflow on a 375px phone the same way they fit a 1920px monitor." },
+          { question: "Which template should I start with?", answer: "For a first project, the Shop GUI or Settings Menu. Both cover patterns every game needs (purchases and persistent settings) and the Luau is short enough to read in one sitting." },
+          { question: "Can I export a template as Luau?", answer: "Yes. Every template exports clean Luau you can paste into a LocalScript under StarterGui. The export uses readable Instance.new calls, so you can keep editing in Studio after importing." },
+        ],
+      },
+    ],
+  },
+  "roblox-shop-gui-tutorial": {
+    slug: "roblox-shop-gui-tutorial",
+    title: "Roblox Shop GUI Tutorial: Build a Shop (2026)",
+    description:
+      "Build a Roblox shop GUI with UIGridLayout, MarketplaceService prompts, server-side receipt validation, and Tween buy feedback. Full Luau code included.",
+    targetKeyword: "roblox shop gui",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/roblox-shop-gui-tutorial.webp`,
+    keywords: ["roblox shop gui", "roblox shop gui script", "roblox shop gui template"],
+    content: `A Roblox shop GUI is one of the most common UI patterns you will build, but creating one from scratch means wrestling with UIGridLayout, MarketplaceService prompts, server-side validation, and Tween animations at once. This tutorial walks through every step with complete Luau code.
+
+If you have ever tried to sell Gamepasses or Developer Products and hit a wall on the UI side, this is for you. By the end you will have a working shop with an item grid, category tabs, a Buy button that opens the real purchase prompt, server-side receipt validation, and a satisfying buy animation.`,
+    sections: [
+      { type: "heading", level: 2, text: "Why building a shop GUI by hand is slow" },
+      {
+        type: "text",
+        body: "A working shop needs five moving parts: an item grid that reflows on mobile, category tabs that filter the grid, a Buy button per item that calls MarketplaceService, a server that validates receipts so players cannot fake purchases, and a Tween animation so the buy feels rewarding. Most tutorials cover one or two of these and leave you stuck on the rest. This one covers all five, with complete code.",
+      },
+      { type: "heading", level: 2, text: "Step 1: Design the shop layout with UIGridLayout" },
+      {
+        type: "text",
+        body: "In this step you will lay out the item grid and category tabs. Start with a Frame anchored to the center of the screen, sized with Scale so it works on any device. Inside it, place a ScrollingFrame for the item grid and a horizontal Frame for the category tabs. The item grid uses UIGridLayout with a fixed cell size, so items arrange automatically and scroll when there are more than fit on screen. Use Scale-based sizing everywhere - a shop that only fits your monitor will break on a player's phone.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "StarterGui/ShopGui/ShopPanel (create in editor)",
+        code: `-- Shop layout structure (build this in the web editor or in Studio)
+-- ShopPanel (Frame, Scale 0.5 x 0.6, centered)
+--   CategoryTabs (Frame, top bar)
+--     Tab_Gear (TextButton)
+--     Tab_PowerUps (TextButton)
+--     Tab_Skins (TextButton)
+--   ItemGrid (ScrollingFrame, UIListLayout or UIGridLayout)
+--     GridLayout (UIGridLayout, CellSize 120x140)
+--   CoinHeader (TextLabel, top-right, shows balance)`,
+      },
+      { type: "heading", level: 2, text: "Step 2: Generate the client Luau" },
+      {
+        type: "text",
+        body: "The client script builds the shop UI programmatically and wires each Buy button to call MarketplaceService. Below is the complete client code. Paste it into a LocalScript under StarterGui. Each item card specifies whether it is a Gamepass or Developer Product, and the Buy button calls the correct purchase method.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "StarterGui/ShopClient (LocalScript)",
+        code: `-- Roblox Shop GUI - Client Script
+-- Place in: StarterGui/ShopGui (LocalScript)
+
+local Players = game:GetService("Players")
+local MarketplaceService = game:GetService("MarketplaceService")
+local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+local gui = script.Parent
+local itemGrid = gui:WaitForChild("ItemGrid")
+local coinHeader = gui:WaitForChild("CoinHeader")
+
+local purchaseEvent = ReplicatedStorage:WaitForChild("ShopPurchaseResult")
+
+-- Item catalog: replace ids with your own Gamepass/Product ids
+local ITEMS = {
+	{ id = 1001, name = "Sword", kind = "gamepass", price = 250 },
+	{ id = 1002, name = "Speed Boost", kind = "product", price = 100 },
+	{ id = 1003, name = "Golden Skin", kind = "product", price = 150 },
+}
+
+local function playBuyFeedback(card)
+	local flash = TweenService:Create(
+		card,
+		TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{ BackgroundColor3 = Color3.fromRGB(80, 200, 120) }
+	)
+	flash:Play()
+	task.delay(0.4, function()
+		card.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+	end)
+end
+
+for _, item in ipairs(ITEMS) do
+	local card = itemGrid:WaitForChild(item.name)
+	local buyButton = card:WaitForChild("BuyButton")
+	buyButton.MouseButton1Click:Connect(function()
+		if item.kind == "gamepass" then
+			MarketplaceService:PromptGamepassPurchase(player, item.id)
+		else
+			MarketplaceService:PromptProductPurchase(player, item.id)
+		end
+	end)
+end
+
+purchaseEvent.OnClientEvent:Connect(function(itemId, success)
+	if success then
+		local item = ITEMS[1]
+		for _, it in ipairs(ITEMS) do
+			if it.id == itemId then item = it end
+		end
+		if item then
+			playBuyFeedback(itemGrid:WaitForChild(item.name))
+		end
+	end
+end)`,
+      },
+      { type: "heading", level: 2, text: "Step 3: Validate purchases on the server" },
+      {
+        type: "text",
+        body: "Never trust the client for purchases. The server must validate every receipt with MarketplaceService:ProcessReceipt before granting the item. This is the step that prevents players from faking a buy with an exploit. The server also pushes the result back to the client so the UI can show the success animation.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "ServerScriptService/ShopServer (Script)",
+        code: `-- Roblox Shop GUI - Server Script
+-- Place in: ServerScriptService (Script)
+
+local MarketplaceService = game:GetService("MarketplaceService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local purchaseEvent = ReplicatedStorage:WaitForChild("ShopPurchaseResult")
+
+-- Grant the purchased item: replace with your real grant logic
+local function grantItem(player, itemId)
+	-- Example: add to inventory, give a tool, or award currency
+	print(string.format("[Shop] Granting item %d to %s", itemId, player.Name))
+end
+
+MarketplaceService.ProcessReceipt = function(receiptInfo)
+	local player = game.Players:GetPlayerByUserId(receiptInfo.PlayerId)
+	if not player then
+		return Enum.ProductPurchaseDecision.NotProcessedYet
+	end
+
+	-- Validate: confirm the player can receive this item
+	grantItem(player, receiptInfo.ProductId)
+	purchaseEvent:FireClient(player, receiptInfo.ProductId, true)
+
+	return Enum.ProductPurchaseDecision.PurchaseGranted
+end`,
+      },
+      { type: "heading", level: 2, text: "Step 4: Add Tween feedback on purchase" },
+      {
+        type: "text",
+        body: "A shop that just silently grants an item feels dead. The playBuyFeedback function above flashes the purchased card green for 0.2 seconds when the server confirms the purchase. You can expand this with a scale-up Tween on the card, a coin counter that counts up to the new balance, or a sound effect. Keep the animation under half a second so it does not block the next purchase.",
+      },
+      { type: "heading", level: 2, text: "Common mistakes to avoid" },
+      {
+        type: "list",
+        items: [
+          "Granting items on the client - always validate with ProcessReceipt on the server",
+          "Using Offset-only sizing - the shop breaks on mobile; use Scale everywhere",
+          "Forgetting to check kind before prompting - Gamepass and Product use different methods",
+          "No purchase feedback - players think nothing happened and buy again, costing Robux",
+        ],
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "Where do I paste the Roblox shop GUI code?", answer: "Paste the client code into a LocalScript under StarterGui, and the server code into a Script under ServerScriptService. The client builds the UI and prompts purchases; the server validates receipts and grants items." },
+          { question: "Do I need both a Gamepass and a Developer Product?", answer: "You can use either or both. Each item card specifies its kind - set it to gamepass or product and the Buy button calls the correct MarketplaceService method. Mixing them in one shop is fine." },
+          { question: "How do I stop players from faking purchases?", answer: "Validate every receipt with MarketplaceService:ProcessReceipt on the server before granting the item. Never grant items based on a client-side event alone, or exploiters can fire the event and get items for free." },
+          { question: "Can I customize the Roblox shop GUI layout?", answer: "Yes. Open the layout in the web editor, drag items into the grid, change colors and fonts in the Properties panel, and re-export the Luau. The purchase logic stays the same." },
+          { question: "Does this work with my existing currency system?", answer: "Yes. The grantItem function in the server script is where you hook into your currency or inventory system. Replace the placeholder print with your own grant logic - for example, adding to player.leaderstats.Coins or inserting into a DataStore inventory." },
+        ],
+      },
+    ],
+  },
+  "roblox-scale-vs-offset-guide": {
+    slug: "roblox-scale-vs-offset-guide",
+    title: "Roblox Scale vs Offset: GUI Sizing Guide (2026)",
+    description:
+      "Master Roblox scale vs offset with UDim2, AnchorPoint, and UIAspectRatioConstraint. Fix mobile UI breaks with full code examples and a cheat sheet.",
+    targetKeyword: "roblox scale vs offset",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/roblox-scale-vs-offset-guide.webp`,
+    keywords: ["roblox scale vs offset", "roblox gui scaling", "roblox udim2 guide", "roblox gui responsive"],
+    content: `If your GUI looks perfect on your laptop but broken on your phone, the Roblox scale vs offset distinction is the root cause: you sized with Offset (pixels) instead of Scale (percentages). This guide explains UDim2 and how to fix the mistake.
+
+Scale vs Offset is the single most confusing concept in Roblox UI development. By the end of this guide you will understand UDim2 completely, know when to use Scale versus Offset, and have a cheat sheet to fix any sizing problem.`,
+    sections: [
+      { type: "heading", level: 2, text: "Why your GUI looks broken on mobile (the #1 beginner mistake)" },
+      {
+        type: "text",
+        body: "Picture a typical scenario. You design a main menu on a 1920x1080 monitor. The Play button is 300 pixels wide and centered. It looks great. Then you open the game on a phone, and the button is half off-screen, the text overflows, and the layout is unusable. One of the most common questions on the Roblox Developer Forum is \"Why is my GUI so small on different devices?\" - and the answer is always the same. The beginner sized the button with Offset (300 pixels), so it is 300 pixels on a 1920px screen and 300 pixels on a 375px phone. On the phone, 300 pixels is most of the width. That is the mistake.",
+      },
+      { type: "heading", level: 2, text: "What is UDim2? The building block of Roblox UI" },
+      {
+        type: "text",
+        body: "Every GuiObject's Position and Size is a UDim2, which holds four numbers: a Scale and an Offset for both the X and Y axes. The formula is: final size = (Scale x parent size) + Offset. Scale is a fraction of the parent (0.5 = half the parent), Offset is raw pixels added on top.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "UDim2 breakdown",
+        code: `-- UDim2.new(xScale, xOffset, yScale, yOffset)
+--             ↑        ↑        ↑        ↑
+--          X-axis %  X-axis px Y-axis %  Y-axis px
+
+-- Example: a frame half the width of its parent, plus 10 pixels padding
+frame.Size = UDim2.new(0.5, 10, 0.4, 0)
+-- On a 1920px-wide parent: (0.5 * 1920) + 10 = 970 px wide
+-- On a 375px-wide phone:  (0.5 * 375)  + 10 = 197.5 px wide
+-- The frame scales with the parent. This is what you want.`,
+      },
+      { type: "heading", level: 2, text: "Scale vs Offset: when to use which" },
+      {
+        type: "text",
+        body: "Use Scale for anything that should resize with the screen: container frames, buttons, panels, HUD elements. Use Offset for small, fixed adjustments: a 4px padding, a 2px border, a small icon that must stay exactly 32x32. The rule of thumb is Scale for layout, Offset for fine-tuning. If you find yourself writing a large Offset for a container, that is a bug waiting to happen on mobile.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Wrong vs Right",
+        code: `-- WRONG: sized with Offset only. Breaks on mobile.
+button.Size = UDim2.new(0, 300, 0, 60)
+-- 300px on 1920px desktop = fine. 300px on 375px phone = almost full width.
+
+-- RIGHT: sized with Scale. Works on every device.
+button.Size = UDim2.new(0.4, 0, 0.1, 0)
+-- 40% of parent width, 10% of parent height, on any screen size.`,
+      },
+      { type: "heading", level: 2, text: "AnchorPoint: the missing piece" },
+      {
+        type: "text",
+        body: "AnchorPoint controls which point of the element the Position refers to. Default is top-left (0,0), so a Position of (0.5, 0) puts the element's left edge at the horizontal center - not centered. To truly center an element, set AnchorPoint to (0.5, 0.5) and Position to (0.5, 0, 0.5, 0). Most alignment bugs come from forgetting to set AnchorPoint before positioning.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Centering an element",
+        code: `-- Truly center a frame on screen
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+frame.Size = UDim2.new(0.4, 0, 0.6, 0)
+-- Now the frame's center is at the screen's center, on any device.`,
+      },
+      { type: "heading", level: 2, text: "Quick reference cheat sheet" },
+      {
+        type: "list",
+        items: [
+          "Container frames, buttons, panels: Scale for Size and Position",
+          "Padding, borders, small icons: Offset only",
+          "Center an element: AnchorPoint (0.5, 0.5) + Position (0.5, 0, 0.5, 0)",
+          "Full-screen panel: Size (1, 0, 1, 0) with AnchorPoint (0, 0)",
+          "Aspect-locked element: UIAspectRatioConstraint with AspectRatio (e.g. 16:9 = 1.78)",
+          "Min/max size: UISizeConstraint with MinSize/MaxSize in pixels",
+          "Text that fits any width: Scale for the label's Size, let Roblox wrap",
+        ],
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "What is the Roblox scale vs offset difference?", answer: "Scale is a fraction of the parent container's size (0.5 = half), so it resizes with the screen. Offset is a fixed pixel value that stays the same on every device. Use Scale for layout that must adapt, Offset for small fixed adjustments like padding and borders." },
+          { question: "Why does my GUI look different on mobile and desktop?", answer: "You probably sized it with Offset (pixels). A 300-pixel button is small on a 1920px monitor but nearly fills a 375px phone. Switch the Size and Position to Scale (percentages) and the layout will resize proportionally on any screen." },
+          { question: "In Roblox scale vs offset, should I ever use Offset?", answer: "Yes, for small fixed values: padding, borders, and tiny icons that must stay an exact pixel size. For containers, buttons, and layout elements, always use Scale. A common pattern is Scale for the main size plus a small Offset for padding." },
+          { question: "How do I center a GUI element on screen?", answer: "Set AnchorPoint to (0.5, 0.5) and Position to UDim2.new(0.5, 0, 0.5, 0). AnchorPoint moves the element's reference point to its center, so Position (0.5, 0.5) places the center at the screen's center on any device." },
+          { question: "What does UIAspectRatioConstraint do?", answer: "It locks an element's aspect ratio so it never stretches. Set the AspectRatio property (for example 1.78 for 16:9) and the element keeps that ratio when the parent resizes. Use it for images and video frames that must not distort." },
+        ],
+      },
+    ],
+  },
+  "figma-to-roblox-complete-guide": {
+    slug: "figma-to-roblox-complete-guide",
+    title: "Figma to Roblox: The Complete Conversion Workflow (2026)",
+    description:
+      "Convert Figma to Roblox Studio UI: the manual workflow today, what the upcoming converter automates, and the 3-step import process to StarterGui.",
+    targetKeyword: "figma to roblox",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/figma-to-roblox-complete-guide.webp`,
+    keywords: ["figma to roblox", "figma to roblox plugin", "figma to roblox export", "figma to roblox converter"],
+    content: `Moving a Figma design into Roblox Studio is tedious, and a smooth Figma to Roblox workflow is what most teams want. This guide covers the manual process today and what the upcoming converter will automate.
+
+This guide covers the manual workflow today, what the upcoming Figma-to-Roblox converter will automate, and the 3-step process that will let you go from a Figma file to a working Roblox UI in one click.`,
+    sections: [
+      { type: "heading", level: 2, text: "The manual workflow today (and why it is painful)" },
+      {
+        type: "text",
+        body: "Today, converting a Figma design to Roblox is a four-step manual process, and every step has friction. You export each layer as a PNG, upload each PNG to your Roblox library one at a time, copy the Asset ID for each, then recreate the layout in Studio with Frames and ImageLabels - manually translating Figma's pixel coordinates into Roblox's Scale/Offset system. The Scale/Offset translation is where most people get stuck, because Figma positions are absolute pixels and Roblox needs responsive percentages.",
+      },
+      { type: "heading", level: 2, text: "What the converter will do" },
+      {
+        type: "text",
+        body: "The Figma-to-Roblox converter automates the entire pipeline. It reads a Figma file and maps its layers directly to Roblox GUI objects. Figma Frames become ScreenGui and Frame instances, text layers become TextLabel and TextButton with matching fonts and sizes, image layers are uploaded to your Roblox library automatically, and the layout is converted to Scale/Offset so it stays responsive. You go from a Figma URL to a working UI without touching any of the manual steps.",
+      },
+      { type: "heading", level: 2, text: "The 3-step workflow" },
+      {
+        type: "text",
+        body: "Once the converter launches, the process collapses to three steps. First, you paste a public Figma file URL or connect your Figma account, and the converter reads your frames, components, and image layers. Second, it auto-converts: Frames become Roblox GUI instances with matching names and hierarchy, text keeps its content and styling, and images upload to your Roblox library automatically, with Scale/Offset conversion for responsive layouts. Third, you import via the Studio plugin - pick the converted file and drop the UI into StarterGui in one click. Until the plugin ships, you export Luau and paste it manually.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Planned workflow (concept - converter planned)",
+        code: `-- Planned converter workflow (not yet available)
+-- Step 1: paste a public Figma URL
+local figmaUrl = "https://figma.com/file/XXXXX/my-ui-design"
+
+-- Step 2: converter reads and maps layers automatically
+--   Figma Frame "MainMenu" -> ScreenGui "MainMenu"
+--   Figma Text "PlayButton" -> TextButton "PlayButton"
+--   Figma Image "logo.png"   -> ImageLabel (auto-uploaded to Roblox library)
+
+-- Step 3: import to StarterGui via Studio plugin
+-- The output is real, editable instances - not a flattened image.`,
+      },
+      { type: "heading", level: 2, text: "What you can do today" },
+      {
+        type: "text",
+        body: "Until the converter ships, you have two fast options. The AI generator can recreate a design from a plain-text description - describe your Figma design's layout, colors, and elements, and it returns a working Roblox UI. Or you can rebuild it on the editor canvas: drag the same Frames and TextButtons into place and export the Luau. Both produce editable Luau you can paste into StarterGui, and both are faster than the manual PNG-export workflow.",
+      },
+      { type: "heading", level: 2, text: "Joining the waitlist" },
+      {
+        type: "text",
+        body: "Visit the Figma to Roblox page and join the waitlist. You will be emailed when the beta opens for public Figma URLs, automatic asset upload, and Studio plugin import. There is no cost to join, and the converter will be free like the editor.",
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "Is the Figma to Roblox converter available yet?", answer: "Not yet. The converter is planned. Join the waitlist on the Figma to Roblox page to be notified when the beta opens for public Figma URLs, automatic asset upload, and Studio plugin import." },
+          { question: "What is the fastest Figma to Roblox workflow today?", answer: "Use the AI generator to describe the design's layout and elements, or rebuild it on the editor canvas. Both produce editable Luau you can paste into StarterGui, and both are faster than manually exporting PNGs and copying Asset IDs." },
+          { question: "Will the Figma to Roblox converter upload my images automatically?", answer: "Yes. The converter will upload image layers to your Roblox library automatically and link them to the correct ImageLabels. No more manual PNG export and Asset ID copying." },
+          { question: "Does the converter keep the design responsive?", answer: "Yes. It converts Figma's absolute pixel positions into Scale/Offset values, so the resulting UI resizes correctly across devices instead of being locked to one screen size." },
+          { question: "Do I need the Studio plugin to use the converter?", answer: "The plugin makes import one click, but it is not required. Until the plugin ships, you can export the converted Luau and paste it into StarterGui manually - the output is identical." },
+        ],
+      },
+    ],
+  },
+  "roblox-inventory-gui-tutorial": {
+    slug: "roblox-inventory-gui-tutorial",
+    title: "Roblox Inventory GUI Tutorial: Backpack System (2026)",
+    description:
+      "Build a Roblox inventory GUI with slot grid, drag-and-drop, rarity borders, equip logic, and DataStore persistence. Full client and server Luau code.",
+    targetKeyword: "roblox inventory gui",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/roblox-inventory-gui-tutorial.webp`,
+    keywords: ["roblox inventory gui", "roblox inventory gui script", "roblox inventory gui template", "roblox inventory system"],
+    content: `A Roblox inventory GUI is the backbone of every RPG, simulator, and adventure game. Players collect items, equip the best ones, and expect the layout to survive their phone screen. This tutorial builds a complete backpack system.
+
+This tutorial builds a complete backpack system from the ground up, with a slot grid that reflows on mobile, drag-and-drop between slots, rarity-colored borders, an equip button that syncs to the server, and DataStore saving so items persist across sessions. Full client and server code is included.`,
+    sections: [
+      { type: "heading", level: 2, text: "Step 1: Build the slot grid with UIGridLayout" },
+      {
+        type: "text",
+        body: "In this step you will lay out the inventory panel and the slot grid. Start with a centered Frame for the inventory panel, toggled by the Tab key. Inside it, a ScrollingFrame holds the item slots, and a UIGridLayout arranges them in a grid with a fixed cell size. Use Scale-based sizing so the grid reflows to a single column on a phone. Each slot is a Frame with a rarity-colored UIStroke border, an ImageLabel for the item icon, and a count badge.",
+      },
+      { type: "heading", level: 2, text: "Step 2: Add drag-and-drop with UIDragDetector" },
+      {
+        type: "text",
+        body: "Drag-and-drop lets players rearrange items by dragging them between slots. Roblox's UIDragDetector makes this much easier than writing manual mouse-following code. Attach a UIDragDetector to each slot, and on drop, swap the item data between the source and target slots and refresh the grid. The visual drag is handled by Roblox; you only need to sync the data on drop.",
+      },
+      { type: "heading", level: 2, text: "Step 3: Equip logic with server sync" },
+      {
+        type: "text",
+        body: "Equipping is where client and server meet. When the player clicks Equip on a slot, fire a RemoteEvent to the server with the item ID. The server validates the equip (does the player own this item?), updates the equipped state, and fires back to update the HUD or character. Never let the client decide what is equipped - that is how exploiters equip items they do not own.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "StarterGui/InventoryClient (LocalScript)",
+        code: `-- Inventory GUI - Client Script
+-- Place in: StarterGui/InventoryGui (LocalScript)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local gui = script.Parent
+local slotGrid = gui:WaitForChild("SlotGrid")
+local equipEvent = ReplicatedStorage:WaitForChild("InventoryEquip")
+local stateEvent = ReplicatedStorage:WaitForChild("InventoryState")
+
+-- Toggle inventory with Tab
+UserInputService.InputBegan:Connect(function(input, processed)
+	if processed then return end
+	if input.KeyCode == Enum.KeyCode.Tab then
+		gui.Enabled = not gui.Enabled
+	end
+end)
+
+-- Wire each slot's Equip button
+local function wireSlot(slot)
+	local equipButton = slot:WaitForChild("EquipButton")
+	equipButton.MouseButton1Click:Connect(function()
+		equipEvent:FireServer(slot:GetAttribute("ItemId"))
+	end)
+end
+
+for _, slot in ipairs(slotGrid:GetChildren()) do
+	if slot:IsA("Frame") then
+		wireSlot(slot)
+	end
+end
+
+-- Refresh grid when server pushes state
+stateEvent.OnClientEvent:Connect(function(state)
+	for _, slot in ipairs(slotGrid:GetChildren()) do
+		if slot:IsA("Frame") then
+			local data = state[slot.Name]
+			slot:WaitForChild("Icon").Visible = data ~= nil
+			slot:WaitForChild("EquippedBadge").Visible = data and data.equipped or false
+		end
+	end
+end)`,
+      },
+      { type: "heading", level: 2, text: "Step 4: Persist with DataStore" },
+      {
+        type: "text",
+        body: "DataStore keeps the inventory across sessions. On join, the server loads the player's saved items and pushes them to the client. On equip or leave, the server saves the current state. Always wrap DataStore calls in pcall so a failed save does not crash the game, and save on PlayerRemoving as a final backup. For large inventories, use UpdateAsync instead of SetAsync to avoid overwriting concurrent saves from other sessions, and consider batching saves every 30 seconds rather than on every equip to stay under the DataStore request limit.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "ServerScriptService/InventoryServer (Script)",
+        code: `-- Inventory GUI - Server Script
+-- Place in: ServerScriptService (Script)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local DataStoreService = game:GetService("DataStoreService")
+
+local invStore = DataStoreService:GetDataStore("PlayerInventory")
+local equipEvent = ReplicatedStorage:WaitForChild("InventoryEquip")
+local stateEvent = ReplicatedStorage:WaitForChild("InventoryState")
+
+local playerInventories = {}
+
+-- Load inventory on join
+local function loadInventory(player)
+	local success, data = pcall(function()
+		return invStore:GetAsync(player.UserId)
+	end)
+	playerInventories[player.UserId] = (success and data) or {}
+	stateEvent:FireClient(player, playerInventories[player.UserId])
+end
+
+-- Save inventory
+local function saveInventory(player)
+	local data = playerInventories[player.UserId]
+	if not data then return end
+	pcall(function()
+		invStore:SetAsync(player.UserId, data)
+	end)
+end
+
+-- Handle equip requests
+equipEvent.OnServerEvent:Connect(function(player, itemId)
+	local inv = playerInventories[player.UserId]
+	if not inv then return end
+	-- Validate ownership before equipping
+	local owns = inv[itemId] ~= nil
+	if owns then
+		inv[itemId].equipped = not inv[itemId].equipped
+		saveInventory(player)
+		stateEvent:FireClient(player, inv)
+	end
+end)
+
+Players.PlayerAdded:Connect(loadInventory)
+Players.PlayerRemoving:Connect(saveInventory)`,
+      },
+      { type: "heading", level: 2, text: "Item rarity and borders" },
+      {
+        type: "text",
+        body: "Rarity is communicated by the UIStroke border color on each slot: gray for common, green for uncommon, blue for rare, purple for epic, gold for legendary. Store the rarity on the item data and set the slot's UIStroke color accordingly. Players read the border color instantly, so keep the mapping consistent across your whole game.",
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "Where do I paste the Roblox inventory GUI code?", answer: "Paste the client code into a LocalScript under StarterGui, and the server code into a Script under ServerScriptService. The client handles the grid, drag-and-drop, and Equip clicks; the server validates equips and saves to DataStore." },
+          { question: "How do I add more slots to my Roblox inventory GUI?", answer: "The grid uses UIGridLayout with a fixed cell size, so adding slots is a matter of adding more items to the inventory data. The grid reflows automatically and scrolls when there are more than fit on screen." },
+          { question: "How do I prevent players from equipping items they do not own?", answer: "Validate ownership on the server before equipping. In the equipEvent handler, check that the item exists in the player's inventory data before toggling the equipped state. Never trust a client-side equip request." },
+          { question: "Does the inventory save across sessions?", answer: "Yes. The server loads the saved inventory on join and saves it on equip and when the player leaves. All DataStore calls are wrapped in pcall so a failed save does not crash the game." },
+          { question: "Can I customize the slot layout and rarity colors?", answer: "Yes. Open the layout in the web editor, change the grid cell size, slot colors, and rarity border mapping in the Properties panel, and re-export the Luau. The drag-and-drop and DataStore logic stays the same." },
+        ],
+      },
+    ],
+  },
+  "how-to-create-roblox-gui": {
+    slug: "how-to-create-roblox-gui",
+    title: "How to Create Roblox GUI from Scratch (2026)",
+    description:
+      "Learn how to create a Roblox GUI from scratch: ScreenGui, Frame, TextLabel, Scale vs Offset, and getting your UI into Studio. No prior experience needed.",
+    targetKeyword: "how to create roblox gui",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/how-to-create-roblox-gui.webp`,
+    keywords: ["how to create roblox gui", "roblox gui design beginner", "roblox gui tutorial"],
+    content: `If you want to learn how to create Roblox GUI screens from scratch, this guide walks you from zero to a working menu with ScreenGui, Frame, TextLabel, and Scale vs Offset. No prior experience is needed.`,
+    sections: [
+      { type: "heading", level: 2, text: "What is a Roblox GUI?" },
+      {
+        type: "text",
+        body: "A GUI (Graphical User Interface) in Roblox is anything drawn on the player's screen that is not part of the 3D world - menus, health bars, inventory panels, shop windows, and loading screens. Every GUI starts with a ScreenGui, which is the root container that tells Roblox \"draw these elements on the screen.\" Inside the ScreenGui you place Frames, TextLabels, TextButtons, ImageLabels, and layout objects. Think of ScreenGui as the canvas and the other objects as the paint.",
+      },
+      { type: "heading", level: 2, text: "The three building blocks: ScreenGui, Frame, and TextLabel" },
+      {
+        type: "text",
+        body: "Every Roblox GUI, no matter how complex, is built from the same three objects. ScreenGui is the root - it goes under StarterGui and tells Roblox to render its children on screen. Frame is a rectangle container - you use it to group other elements, draw panels, and create layout structure. TextLabel is text on screen - titles, labels, instructions, anything that displays words. Once you understand these three, every other GUI object (TextButton, ImageLabel, ScrollingFrame) is a variation on the same idea. A TextButton is just a TextLabel you can click. An ImageLabel is just a Frame that shows a picture instead of a solid color.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "StarterGui/MyFirstGui (LocalScript)",
+        code: `-- How to Create a Roblox GUI - Beginner Example
+-- Place in: StarterGui (LocalScript)
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Create the ScreenGui (root container)
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "MyFirstGui"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Create a Frame (a visible panel)
+local panel = Instance.new("Frame")
+panel.Name = "Panel"
+panel.Size = UDim2.new(0.4, 0, 0.3, 0)
+panel.Position = UDim2.new(0.5, 0, 0.5, 0)
+panel.AnchorPoint = Vector2.new(0.5, 0.5)
+panel.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+panel.Parent = screenGui
+
+-- Add a TextLabel (text on the panel)
+local title = Instance.new("TextLabel")
+title.Name = "Title"
+title.Size = UDim2.new(1, 0, 0.3, 0)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "My First GUI"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+title.Parent = panel`,
+      },
+      { type: "heading", level: 2, text: "Scale vs Offset: why your GUI breaks on mobile" },
+      {
+        type: "text",
+        body: "The single biggest beginner mistake is sizing GUI elements with Offset (pixels) instead of Scale (percentages). If you set a button to 300 pixels wide, it looks fine on a 1920px monitor but nearly fills a 375px phone screen. Scale fixes this: a Size of UDim2.new(0.4, 0, 0.1, 0) means 40% of the parent width and 10% of the parent height, on any device. Use Scale for layout, Offset only for small fixed values like padding and borders. This one rule prevents 90% of mobile GUI bugs.",
+      },
+      { type: "heading", level: 2, text: "Adding your first button" },
+      {
+        type: "text",
+        body: "A TextButton is a TextLabel the player can click. You create it the same way as a TextLabel, then connect its MouseButton1Click event to a function that runs when the player taps it. This is how every menu Play button, shop Buy button, and settings toggle works. The connection fires on the client, so for anything that affects the game (starting a match, buying an item), you fire a RemoteEvent to the server to do the real work.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Adding a clickable button",
+        code: `-- Add a TextButton to the panel
+local playButton = Instance.new("TextButton")
+playButton.Name = "PlayButton"
+playButton.Size = UDim2.new(0.6, 0, 0.3, 0)
+playButton.Position = UDim2.new(0.2, 0, 0.5, 0)
+playButton.BackgroundColor3 = Color3.fromRGB(109, 93, 251)
+playButton.Text = "Play"
+playButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+playButton.TextScaled = true
+playButton.Parent = panel
+
+-- Connect the click event
+playButton.MouseButton1Click:Connect(function()
+	print("Player clicked Play!")
+	-- Fire a RemoteEvent to the server to start the game
+end)`,
+      },
+      { type: "heading", level: 2, text: "Getting your GUI into Studio" },
+      {
+        type: "text",
+        body: "Once your GUI is built, it needs to go into StarterGui so Roblox loads it for every player. In Studio, open the Explorer panel, find StarterGui, right-click, and insert a LocalScript. Paste your GUI code into that LocalScript. When you press Play, the script runs and builds the GUI on the player's screen. You can also build the GUI visually in Studio by inserting ScreenGui, Frame, and TextLabel instances directly in the Explorer, but writing it in code (like above) means you can generate it with a tool and paste it in one step.",
+      },
+      { type: "heading", level: 2, text: "Common beginner mistakes to avoid" },
+      {
+        type: "list",
+        items: [
+          "Using Offset (pixels) for sizing instead of Scale (percentages) - breaks on mobile",
+          "Forgetting AnchorPoint when centering - the element's corner ends up at the center, not its middle",
+          "Putting GUI code in a regular Script instead of a LocalScript - GUIs must run on the client",
+          "Not parenting the ScreenGui to PlayerGui - the GUI never appears on screen",
+          "ResetOnSpawn left as true - the GUI resets every time the player respawns, losing state",
+        ],
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "Do I need to know Luau to learn how to create Roblox GUI?", answer: "No. You can build a GUI visually in Roblox Studio by inserting ScreenGui, Frame, and TextLabel instances in the Explorer, or use a visual editor like Roblox GUI Maker that generates the Luau for you. Luau is only needed if you want to add interactivity like button clicks or animations." },
+          { question: "Where does my GUI code go in Studio?", answer: "Paste it into a LocalScript under StarterGui. StarterGui loads for every player when they join. The LocalScript runs on the client and builds the ScreenGui in the player's PlayerGui, which is what renders on their screen." },
+          { question: "Why does my GUI look different on phone and PC?", answer: "You probably sized it with Offset (pixels) instead of Scale (percentages). A 300-pixel button is small on a 1920px monitor but nearly fills a 375px phone. Use UDim2.new(0.4, 0, 0.1, 0) for 40% width and 10% height, and it will resize proportionally on any device." },
+          { question: "What is the difference between ScreenGui and Frame?", answer: "ScreenGui is the root container that tells Roblox to draw on screen - it goes under StarterGui. Frame is a rectangle inside the ScreenGui that you use to group elements and draw panels. Every GUI starts with one ScreenGui and fills it with Frames, TextLabels, and buttons." },
+          { question: "How to create Roblox GUI without Studio?", answer: "Yes. A visual editor like Roblox GUI Maker lets you drag frames, buttons, and text onto a canvas in your browser, then exports the Luau code. You paste that code into a LocalScript in Studio. The result is identical to building it by hand in Studio." },
+        ],
+      },
+    ],
+  },
+  "roblox-gui-design-tutorial": {
+    slug: "roblox-gui-design-tutorial",
+    title: "Roblox GUI Design Tutorial: Principles and Patterns (2026)",
+    description:
+      "Learn Roblox GUI design tutorial principles: contrast, alignment, hierarchy, color, and typography for menus, HUDs, and panels on any device.",
+    targetKeyword: "roblox gui design tutorial",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/roblox-gui-design-tutorial.webp`,
+    keywords: ["roblox gui design tutorial", "roblox gui design", "roblox ui design patterns"],
+    content: `This Roblox GUI design tutorial shows that a good interface is not about fancy graphics but clarity. Players read your UI in under a second, so contrast, alignment, and hierarchy matter more than polish.`,
+    sections: [
+      { type: "heading", level: 2, text: "Contrast: make text readable first" },
+      {
+        type: "text",
+        body: "The most common GUI design failure is low contrast - gray text on a gray background, or a light button on a light panel. Players cannot read it, especially on a phone in bright light. Use high contrast pairs: white or light text on dark panels, dark text on light panels. Aim for a contrast ratio that reads clearly at arm's length on a small screen. In Roblox, this usually means text color #FFFFFF or #F0F0F0 on backgrounds darker than #303040. If you are unsure, open your GUI on a phone emulator and squint - if the text blurs into the background, increase the contrast.",
+      },
+      { type: "heading", level: 2, text: "Alignment: line things up so the eye follows" },
+      {
+        type: "text",
+        body: "Misaligned elements make a GUI feel amateur. Pick one alignment axis and stick to it - for example, left-align all text in a panel, or center-align all buttons in a menu. Use UIListLayout and UIGridLayout to enforce alignment automatically instead of hand-placing each element. When elements share an edge (all titles at the same X, all buttons at the same Y), the eye follows a clean vertical line and the layout feels organized. Randomly placed elements force the eye to hunt, and the GUI feels chaotic.",
+      },
+      { type: "heading", level: 2, text: "Hierarchy: tell the player what matters" },
+      {
+        type: "text",
+        body: "Every GUI should have one primary action - the Play button, the Buy button, the Claim button. Make it the biggest, brightest element on screen, and dim everything else. Use size and color to rank importance: primary action (large, brand color), secondary action (medium, outline), and tertiary (small, text link). If everything looks equally important, nothing is. A player should know where to look and what to do without reading any text.",
+      },
+      { type: "heading", level: 2, text: "Color: pick a palette and stick to it" },
+      {
+        type: "text",
+        body: "Limit your GUI to three or four colors: a background color, a surface color, a text color, and one accent color for primary actions. Too many colors make a GUI feel noisy and childish. The accent color (your brand color) should appear only on the primary action and key interactive elements - it is the one color the player learns to associate with \"tap here.\" Dark backgrounds with one bright accent (like violet or cyan) read as modern and work well for most Roblox games. Use Color3 values consistently - define them once and reuse.",
+      },
+      { type: "heading", level: 2, text: "Typography: readable fonts, sensible sizes" },
+      {
+        type: "text",
+        body: "Use readable fonts for body text (Gotham or SourceSans) and reserve decorative fonts (Bangers, FredokaOne) for titles only. Font size matters more than font family: titles 28+ for readability, body 18-22 for comfort on mobile, and nothing smaller than 14 for legibility. Avoid all-caps for long text - it is harder to read. Use TextScaled carefully; it shrinks text on small screens, so set a minimum size with UITextSizeConstraint to prevent illegibly tiny text on phones.",
+      },
+      { type: "heading", level: 2, text: "Applying the principles to a menu" },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Well-designed menu (design patterns applied)",
+        code: `-- Design patterns applied to a main menu
+-- Place in: StarterGui (LocalScript)
+
+local panel = Instance.new("Frame")
+-- Dark background for contrast
+panel.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+panel.BackgroundTransparency = 0.1
+
+-- Accent color for the primary action only
+local ACCENT = Color3.fromRGB(109, 93, 251) -- brand violet
+local playButton = Instance.new("TextButton")
+playButton.Size = UDim2.new(0.4, 0, 0.15, 0) -- large, primary
+playButton.BackgroundColor3 = ACCENT
+playButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- high contrast
+playButton.TextSize = 24 -- large, readable
+
+-- Secondary action: outline, smaller
+local settingsButton = Instance.new("TextButton")
+settingsButton.Size = UDim2.new(0.3, 0, 0.1, 0) -- smaller, secondary
+settingsButton.BackgroundTransparency = 1
+settingsButton.TextColor3 = Color3.fromRGB(180, 180, 190) -- muted
+
+-- Left-align all labels with UIListLayout for clean alignment
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 12)
+layout.FillDirection = Enum.FillDirection.Vertical
+layout.Parent = panel`,
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "What is the most important rule in this Roblox GUI design tutorial?", answer: "Contrast. If players cannot read your text on a phone screen, nothing else matters. Use light text on dark backgrounds (or the reverse) with a clear contrast ratio, and test on a phone emulator before shipping." },
+          { question: "How many colors should my Roblox GUI use?", answer: "Three to four: background, surface, text, and one accent for the primary action. Too many colors make a GUI feel noisy. Use the accent color only for the main button and key interactive elements so players learn to tap it." },
+          { question: "What font size should I use for mobile?", answer: "Titles 28+, body text 18-22, and nothing below 14. Text that looks fine on a PC monitor is often illegibly small on a phone. Use UITextSizeConstraint to set a minimum so TextScaled never shrinks text below readability." },
+          { question: "In this Roblox GUI design tutorial, should I use UIListLayout or hand-place?", answer: "Use UIListLayout and UIGridLayout for alignment. They automatically line up elements along a consistent axis, which makes the GUI look organized. Hand-placing with Offset leads to misaligned, amateur-looking layouts." },
+          { question: "How do I make my primary button stand out?", answer: "Make it the largest element, use your accent color for its background, and give it the highest-contrast text. Dim or outline secondary buttons. The player should spot the primary action instantly without reading anything." },
+        ],
+      },
+    ],
+  },
+  "roblox-hud-gui-tutorial": {
+    slug: "roblox-hud-gui-tutorial",
+    title: "Roblox HUD GUI Tutorial: Health, Coins, and Minimap (2026)",
+    description:
+      "Build a Roblox HUD GUI with a Tween health bar, coin counter, and minimap. Full Luau code with mobile-safe layout and low-health warnings for any game.",
+    targetKeyword: "roblox hud gui",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/roblox-hud-gui-tutorial.webp`,
+    keywords: ["roblox hud gui", "roblox hud gui tutorial", "roblox health bar gui"],
+    content: `A Roblox HUD GUI is the always-on UI that tracks the player's state during gameplay: health, coins, ammo, and minimap. It sits in the screen corners so it never blocks the action.`,
+    sections: [
+      { type: "heading", level: 2, text: "HUD layout: corners, Scale, and low clutter" },
+      {
+        type: "text",
+        body: "A HUD goes in the corners so it does not block the action. Health bottom-left, coins top-right, minimap top-left is the standard layout. Each element uses Scale-based sizing anchored to its corner with AnchorPoint, so it stays in place on any screen size. Keep each HUD cluster small (under 200x80 logical pixels) so the viewport stays clear. The worst HUD mistake is filling the screen with UI - the player cannot see the game anymore.",
+      },
+      { type: "heading", level: 2, text: "Health bar with Tween and HealthChanged" },
+      {
+        type: "text",
+        body: "The health bar is the heart of the HUD. Bind it to the player's Humanoid with Humanoid.HealthChanged, so it updates automatically when the player takes damage or heals. Animate the fill with TweenService so the bar drains smoothly instead of snapping. Below 25% health, pulse the bar red to warn the player. The fill is a Frame inside the bar container, sized by health ratio (health / maxHealth) along the X axis.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "StarterGui/HudClient (LocalScript)",
+        code: `-- Roblox HUD - Client Script
+-- Place in: StarterGui (LocalScript)
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local gui = script.Parent
+local healthBar = gui:WaitForChild("HealthBar")
+local fill = healthBar:WaitForChild("Fill")
+local coinLabel = gui:WaitForChild("CoinLabel")
+
+local humanoid = player.Character and player.Character:WaitForChild("Humanoid")
+
+local function updateHealth(current, max)
+	local ratio = math.clamp(current / max, 0, 1)
+	TweenService:Create(
+		fill,
+		TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{ Size = UDim2.new(ratio, 0, 1, 0) }
+	):Play()
+	-- Low-health warning
+	if ratio < 0.25 then
+		fill.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+	else
+		fill.BackgroundColor3 = Color3.fromRGB(80, 200, 120)
+	end
+end
+
+if humanoid then
+	updateHealth(humanoid.Health, humanoid.MaxHealth)
+	humanoid.HealthChanged:Connect(function(newHealth)
+		updateHealth(newHealth, humanoid.MaxHealth)
+	end)
+end`,
+      },
+      { type: "heading", level: 2, text: "Coin counter with live updates" },
+      {
+        type: "text",
+        body: "The coin counter shows the player's currency. Bind it to your currency value (usually in leaderstats) with a Changed connection so it updates instantly when the player earns or spends. Format the number with commas for readability (1,234 not 1234), and use a monospace or semi-condensed font so wide numbers do not shift the layout. When the count changes, a quick scale-up Tween on the label confirms the gain without blocking the game.",
+      },
+      { type: "heading", level: 2, text: "Minimap placeholder" },
+      {
+        type: "text",
+        body: "A minimap shows the game world from above. A full minimap with camera projection is advanced, but you can start with a placeholder: a Frame in the top-left corner with a UICorner and a dot for the player's position. As you build out the game, replace the placeholder with a ViewportFrame that renders the world from a top-down camera. The placeholder keeps the HUD layout complete while you develop the real minimap.",
+      },
+      { type: "heading", level: 2, text: "Mobile-safe HUD" },
+      {
+        type: "text",
+        body: "Over half your players are on phones, so the HUD must fit a 375px screen. Use Scale-based sizing for every element, keep clusters small, and avoid the top notch and bottom home bar areas. Test on the editor's mobile preview: if the health bar overlaps the thumb zone or the coin label runs off-screen, shrink the Scale values. A HUD that blocks the touch input on mobile makes the game unplayable.",
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "Where do Roblox HUD GUI elements go on screen?", answer: "In the corners, so they do not block the action. Health bottom-left, coins top-right, minimap top-left is the standard. Use Scale-based sizing with AnchorPoint so each element stays in its corner on any screen size." },
+          { question: "How do I make my Roblox HUD GUI health bar update automatically?", answer: "Bind it to Humanoid.HealthChanged. The event fires whenever the player's health changes, so the bar updates in real time. Animate the fill with TweenService so it drains smoothly, and color it red below 25% health for a warning." },
+          { question: "How do I show the player's coins?", answer: "Bind a TextLabel to your currency value (usually in leaderstats) with a Changed connection. Format the number with commas and use a monospace font so wide numbers do not shift the layout." },
+          { question: "How do I make the HUD work on mobile?", answer: "Use Scale-based sizing for every element, keep clusters small (under 200x80), and avoid the top notch and bottom bar areas. Test on the editor's mobile preview to confirm the HUD does not block touch input or run off-screen." },
+          { question: "Can I add a minimap to the HUD?", answer: "Start with a placeholder Frame in the top-left corner, then replace it with a ViewportFrame that renders the world from a top-down camera as you develop the feature. The placeholder keeps the HUD layout complete while you build the real minimap." },
+        ],
+      },
+    ],
+  },
+  "roblox-gui-animation-tutorial": {
+    slug: "roblox-gui-animation-tutorial",
+    title: "Roblox GUI Animation Tutorial: TweenService (2026)",
+    description:
+      "Learn the Roblox GUI animation tutorial with TweenService: easing styles, chained tweens, slide-ins, fade-outs, and hover effects. Code for every pattern.",
+    targetKeyword: "roblox gui animation tutorial",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/roblox-gui-animation-tutorial.webp`,
+    keywords: ["roblox gui animation tutorial", "roblox gui animation script", "roblox tweenservice gui"],
+    content: `This Roblox GUI animation tutorial shows how TweenService separates a dead GUI from a polished one. A menu that slides in, a button that pulses on hover, a health bar that drains smoothly - these motions make a game feel alive.`,
+    sections: [
+      { type: "heading", level: 2, text: "TweenService basics: what a tween is" },
+      {
+        type: "text",
+        body: "A tween animates a property of a GUI element from its current value to a target value over a set time. You call TweenService:Create with the element, a TweenInfo (time, easing style, direction), and a table of target properties, then call :Play(). The most common properties to animate are Size, Position, BackgroundTransparency, TextTransparency, and BackgroundColor3. The tween runs smoothly at 60fps and reverses or loops if you configure it to. You can animate multiple properties at once by listing them in the same target table, and the tween completes them together, which is cleaner than running two separate tweens. A single tween can slide a panel in and fade it up at the same time, so the motion reads as one gesture instead of two stacked effects.",
+      },
+      { type: "heading", level: 2, text: "Easing styles: how the motion feels" },
+      {
+        type: "text",
+        body: "Easing controls the acceleration curve of the animation. Linear moves at constant speed and looks robotic. Quad eases in or out gently and is the safest default. Back overshoots the target and bounces back, which feels playful and is great for menu pop-ins. Quint and Quart are smoother and more dramatic. For most UI, use Quad or Quint with Out direction - the animation starts fast and settles naturally, which reads as responsive without being bouncy.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "TweenService basics",
+        code: `-- TweenService basics
+-- Place in: StarterGui (LocalScript)
+
+local TweenService = game:GetService("TweenService")
+local panel = script.Parent:WaitForChild("Panel")
+
+-- Slide a panel in from off-screen
+panel.Position = UDim2.new(0.5, 0, 1.5, 0) -- start below the screen
+panel.AnchorPoint = Vector2.new(0.5, 0.5)
+
+local slideIn = TweenService:Create(
+	panel,
+	TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+	{ Position = UDim2.new(0.5, 0, 0.5, 0) }
+)
+slideIn:Play()
+
+-- Fade it out after 3 seconds
+task.delay(3, function()
+	local fadeOut = TweenService:Create(
+		panel,
+		TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+		{ BackgroundTransparency = 1 }
+	)
+	fadeOut:Play()
+end)`,
+      },
+      { type: "heading", level: 2, text: "Chained tweens: sequencing animations" },
+      {
+        type: "text",
+        body: "Complex animations are just simple tweens played in sequence. Use task.delay or tween.Completed to trigger the next tween when the current one finishes. For example, a reward panel might scale up (Back easing, 0.2s), hold, then fade out (Quad easing, 0.3s). Chain them with grow.Completed:Connect(function() shrink:Play() end) so the second tween starts the moment the first ends. This is how you build multi-step UI animations like countdowns, level-up sequences, and claim animations. Keep each step under 0.4 seconds so the full sequence stays snappy, and test on a real device because long chains feel slower on mobile than on a desktop monitor. If a chain looks sluggish, cut a step or shorten the hold, since players read the first and last motion more than the middle.",
+      },
+      { type: "heading", level: 2, text: "Button hover and press feedback" },
+      {
+        type: "text",
+        body: "Interactive elements should respond to the player. On hover (MouseEnter), scale the button up slightly (1.05x) and brighten it; on leave (MouseLeave), return to normal. On press (MouseButton1Down), scale down briefly (0.95x), then bounce back. These micro-animations take a tenth of a second and make buttons feel tactile. Use short tween times (0.1-0.15s) so the feedback is snappy, and keep the scale change subtle - big jumps feel jarring.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Button hover and press animation",
+        code: `-- Button hover and press feedback
+local button = script.Parent:WaitForChild("PlayButton")
+local TweenService = game:GetService("TweenService")
+
+local function tweenScale(target)
+	TweenService:Create(
+		button,
+		TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{ Size = target }
+	):Play()
+end
+
+button.MouseEnter:Connect(function()
+	tweenScale(button.Size + UDim2.fromOffset(8, 8))
+end)
+button.MouseLeave:Connect(function()
+	tweenScale(button.Size - UDim2.fromOffset(8, 8))
+end)
+button.MouseButton1Down:Connect(function()
+	tweenScale(button.Size - UDim2.fromOffset(4, 4))
+end)
+button.MouseButton1Up:Connect(function()
+	tweenScale(button.Size + UDim2.fromOffset(4, 4))
+end)`,
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "What is the best easing style in this Roblox GUI animation tutorial?", answer: "Quad or Quint with Out direction for most UI. It starts fast and settles naturally, which feels responsive. Use Back for playful pop-ins (menus, reward panels) because it overshoots and bounces back. Avoid Linear - it looks robotic." },
+          { question: "How does this Roblox GUI animation tutorial animate a health bar smoothly?", answer: "Use TweenService to animate the fill Frame's Size. When health changes, tween Size to UDim2.new(healthRatio, 0, 1, 0) over 0.2 seconds. The bar drains smoothly instead of snapping. Bind it to Humanoid.HealthChanged for automatic updates." },
+          { question: "How do I chain multiple animations in sequence?", answer: "Use tween.Completed:Connect to start the next tween when the current one finishes, or task.delay to schedule it. For example, grow:Play() then grow.Completed:Connect(function() shrink:Play() end) runs a scale-up then a scale-down." },
+          { question: "Should buttons animate on hover?", answer: "Yes. A subtle scale-up (1.05x) and brighten on hover, with a quick scale-down on press, makes buttons feel tactile. Keep the animation short (0.1-0.15s) and the scale change small - big jumps feel jarring." },
+          { question: "Can I animate text transparency?", answer: "Yes. Use TweenService on the TextTransparency property of a TextLabel or TextButton. A common pattern is fading text in and out for notifications or rotating gameplay tips." },
+        ],
+      },
+    ],
+  },
+  "roblox-menu-script-tutorial": {
+    slug: "roblox-menu-script-tutorial",
+    title: "Roblox Menu Script Tutorial: Main Menu System (2026)",
+    description:
+      "Build a Roblox menu script tutorial project: main menu with page switching, settings panel, and Tween transitions. Full Luau code for Play, Settings, Store.",
+    targetKeyword: "roblox menu script tutorial",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/roblox-menu-script-tutorial.webp`,
+    keywords: ["roblox menu script tutorial", "roblox main menu gui script", "roblox main menu template"],
+    content: `This Roblox menu script tutorial builds a main menu that does more than show a Play button: page switching, a settings panel, and smooth Tween transitions between screens. Full Luau code is included.`,
+    sections: [
+      { type: "heading", level: 2, text: "Menu structure: one shell, many pages" },
+      {
+        type: "text",
+        body: "A good menu uses one shell Frame with a tab bar and a content area, and swaps the content panels when the player clicks a tab. Do not build separate full-screen menus for each page - that means duplicated transitions and more bugs. Instead, create one ScreenGui, put a tab bar on the left or top, and place each page (Play, Settings, Store) as a Frame inside the content area. Show one page and hide the rest; clicking a tab swaps which is visible with a Tween transition.",
+      },
+      { type: "heading", level: 2, text: "Page switching with Tween transitions" },
+      {
+        type: "text",
+        body: "When the player clicks a tab, hide the current page and show the new one with a smooth transition. A common pattern is sliding the old page out and the new page in over 0.3 seconds. Use TweenService on each page's Position, and use a table to track which page is currently visible so the switch is clean. Keep transitions under 0.3 seconds - menus that take too long to open feel slow, especially on mobile.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "StarterGui/MenuClient (LocalScript)",
+        code: `-- Main Menu - Client Script
+-- Place in: StarterGui (LocalScript)
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local gui = script.Parent
+local pages = {
+	Play = gui:WaitForChild("PlayPage"),
+	Settings = gui:WaitForChild("SettingsPage"),
+	Store = gui:WaitForChild("StorePage"),
+}
+local currentPage = "Play"
+
+local function switchPage(name)
+	if name == currentPage then return end
+	local old = pages[currentPage]
+	local new = pages[name]
+	-- Slide old page out, new page in
+	TweenService:Create(old, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+		{ Position = UDim2.new(-1, 0, 0, 0) }):Play()
+	task.delay(0.25, function()
+		old.Visible = false
+		new.Position = UDim2.new(1, 0, 0, 0)
+		new.Visible = true
+		TweenService:Create(new, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+			{ Position = UDim2.new(0, 0, 0, 0) }):Play()
+	end)
+	currentPage = name
+end
+
+-- Wire tab buttons
+for name, _ in pairs(pages) do
+	local tab = gui:WaitForChild("Tab_" .. name)
+	tab.MouseButton1Click:Connect(function()
+		switchPage(name)
+	end)
+end`,
+      },
+      { type: "heading", level: 2, text: "Settings panel: sliders and toggles" },
+      {
+        type: "text",
+        body: "The settings page gives players control over volume, graphics, and music. Use sliders (a draggable handle on a track) for volume and toggles (on/off switches) for music and fullscreen. Bind the volume slider to SoundService so changes apply immediately. Store the settings in a table and save to DataStore on change or on leave, so the player's preferences persist across sessions. The settings rows use UIListLayout so adding a new setting is one Frame.",
+      },
+      { type: "heading", level: 2, text: "Play button: starting the game" },
+      {
+        type: "text",
+        body: "The Play button is the menu's only job. When clicked, fire a RemoteEvent to the server to start the match, and play a confirmation animation so the player knows it registered. Hide the menu after the match starts, or fade it out if the game begins immediately. On game over, show the menu again with the updated state (best time, coins, level). Wire the Play button with a short press animation so it feels responsive.",
+      },
+      { type: "heading", level: 2, text: "Mobile menu considerations" },
+      {
+        type: "text",
+        body: "Most Roblox players are on phones, so the menu must work at 375px width. Use Scale-based sizing for every element, make buttons at least 60x60 logical pixels for imprecise taps, and use big, readable fonts (28+ for titles, 18+ for buttons). Test the tab bar on mobile - if tabs are too small to tap reliably, increase their size or move them to the bottom where thumbs reach easily.",
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "In this Roblox menu script tutorial, how do I switch between pages?", answer: "Use one shell Frame with a tab bar, and show/hide content pages as Frames. When the player clicks a tab, Tween the current page out and the new page in over 0.25-0.3 seconds. Track the current page in a variable so the switch is clean and no two pages show at once." },
+          { question: "How long should transitions be in a Roblox menu script tutorial?", answer: "0.2-0.3 seconds. Longer transitions feel slow, especially on mobile where players tap fast. Use Quad or Quint easing with Out direction so the transition starts fast and settles naturally." },
+          { question: "How do I save menu settings across sessions?", answer: "Store settings in a table and save it to DataStore when the player changes a setting or leaves. Load it on join and apply the saved values to the sliders and toggles. Wrap DataStore calls in pcall so a failed save does not crash the game." },
+          { question: "Should I use one ScreenGui or many for my menu?", answer: "Use one ScreenGui with one shell Frame. Build each page (Play, Settings, Store) as a Frame inside it, and swap which is visible on tab click. Separate ScreenGuis per page means duplicated transitions and more bugs." },
+          { question: "How big should menu buttons be on mobile?", answer: "At least 60x60 logical pixels, ideally larger for the primary Play button. Kids and players on phones tap imprecisely, so bigger hit areas prevent mis-taps. Use Scale-based sizing so buttons stay proportional on any screen." },
+        ],
+      },
+    ],
+  },
+  "roblox-gui-luau-code-snippets": {
+    slug: "roblox-gui-luau-code-snippets",
+    title: "Roblox Lua GUI Code Snippets: Copy-Paste Reference (2026)",
+    description:
+      "Copy-paste Roblox Lua GUI code snippets: ScreenGui, buttons, TweenService, DataStore, UIGridLayout, and UIListLayout. Every snippet is ready for Studio.",
+    targetKeyword: "roblox lua gui code",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/roblox-gui-luau-code-snippets.webp`,
+    keywords: ["roblox lua gui code", "roblox screengui code", "roblox button script gui"],
+    content: `This is a copy-paste reference of the most-used Roblox Lua GUI code snippets. Each pattern is complete and ready to drop into Studio, with a note on where it goes (StarterGui, ServerScriptService, or LocalScript).`,
+    sections: [
+      { type: "heading", level: 2, text: "Create a ScreenGui programmatically" },
+      {
+        type: "text",
+        body: "The foundation of every GUI. Create the ScreenGui, set its properties, and parent it to PlayerGui. ResetOnSpawn = false keeps the GUI alive across respawns so it does not vanish when the player dies and respawns. IgnoreGuiInset = true pushes the GUI under the top bar instead of leaving a gap, which matters for full-screen menus. Always parent the ScreenGui to PlayerGui, never to workspace or StarterGui at runtime, or it will not render on the player's screen.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "StarterGui (LocalScript)",
+        code: `local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "MyGui"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = player:WaitForChild("PlayerGui")`,
+      },
+      { type: "heading", level: 2, text: "Add a Frame and TextLabel" },
+      {
+        type: "text",
+        body: "A centered panel with a title. Use Scale-based sizing and AnchorPoint for true centering so the panel sits in the middle of any screen. AnchorPoint moves the reference point from the top-left corner to the center of the element, which means Position (0.5, 0, 0.5, 0) places the panel's center at the screen's center instead of its top-left corner. Skip AnchorPoint and your centered panel will drift down and to the right on larger screens.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Add to ScreenGui",
+        code: `local panel = Instance.new("Frame")
+panel.Size = UDim2.new(0.4, 0, 0.3, 0)
+panel.Position = UDim2.new(0.5, 0, 0.5, 0)
+panel.AnchorPoint = Vector2.new(0.5, 0.5)
+panel.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+panel.Parent = screenGui
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0.3, 0)
+title.BackgroundTransparency = 1
+title.Text = "Hello Roblox"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+title.Parent = panel`,
+      },
+      { type: "heading", level: 2, text: "Clickable button with feedback" },
+      {
+        type: "text",
+        body: "A TextButton that runs a function on click, with a quick press animation for tactile feedback. Connect MouseButton1Click to a function that fires a RemoteEvent to the server for any game action, never trusting the client to decide game state directly. A press animation that scales the button down 5 percent for a tenth of a second makes the click feel responsive, and it costs one extra tween, so it is worth adding to every button.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Button with press animation",
+        code: `local button = Instance.new("TextButton")
+button.Size = UDim2.new(0.5, 0, 0.4, 0)
+button.Position = UDim2.new(0.25, 0, 0.4, 0)
+button.BackgroundColor3 = Color3.fromRGB(109, 93, 251)
+button.Text = "Click Me"
+button.TextScaled = true
+button.Parent = panel
+
+button.MouseButton1Click:Connect(function()
+	print("Button clicked!")
+	-- Fire a RemoteEvent to the server for game actions
+end)`,
+      },
+      { type: "heading", level: 2, text: "TweenService: smooth animation" },
+      {
+        type: "text",
+        body: "Animate any GUI property smoothly. The most common pattern is sliding a panel in from off-screen or fading it out. TweenService:Create takes the element, a TweenInfo with a time and easing style, and a table of target property values, then :Play() runs the animation at 60 frames per second. Animate Size, Position, BackgroundTransparency, or BackgroundColor3 depending on the effect you want, and chain tweens with Completed for multi-step motion.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "TweenService slide-in",
+        code: `local TweenService = game:GetService("TweenService")
+
+panel.Position = UDim2.new(0.5, 0, 1.5, 0) -- start off-screen
+local tween = TweenService:Create(
+	panel,
+	TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+	{ Position = UDim2.new(0.5, 0, 0.5, 0) }
+)
+tween:Play()`,
+      },
+      { type: "heading", level: 2, text: "DataStore: save and load" },
+      {
+        type: "text",
+        body: "Persist player data across sessions. Always wrap DataStore calls in pcall to handle failures gracefully, because Roblox throttles DataStore requests and a failed GetAsync or SetAsync should never crash your game. Load data on PlayerAdded and save on PlayerRemoving as a baseline, and use UpdateAsync instead of SetAsync when multiple servers might write the same key, since UpdateAsync reads the current value before writing and avoids clobbering concurrent updates.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "ServerScriptService (Script)",
+        code: `local DataStoreService = game:GetService("DataStoreService")
+local Players = game:GetService("Players")
+local store = DataStoreService:GetDataStore("PlayerData")
+
+local function loadData(player)
+	local success, data = pcall(function()
+		return store:GetAsync(player.UserId)
+	end)
+	return (success and data) or { coins = 0 }
+end
+
+local function saveData(player, data)
+	pcall(function()
+		store:SetAsync(player.UserId, data)
+	end)
+end
+
+Players.PlayerAdded:Connect(function(player)
+	local data = loadData(player)
+	print(player.Name, "loaded:", data.coins)
+end)`,
+      },
+      { type: "heading", level: 2, text: "UIGridLayout: auto-arranged grid" },
+      {
+        type: "text",
+        body: "Arrange child elements in a grid automatically. Perfect for inventories, shops, and item lists, where the number of items changes at runtime. Set CellSize and CellPadding once, parent the UIGridLayout to a ScrollingFrame, and every Frame you add afterward slots into the grid without manual positioning. Use Scale in CellSize if you want cells to resize with the screen, or Offset for fixed-size slots that stay a set number of pixels.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Grid layout",
+        code: `local grid = Instance.new("UIGridLayout")
+grid.CellSize = UDim2.fromOffset(120, 140)
+grid.CellPadding = UDim2.fromOffset(8, 8)
+grid.FillDirection = Enum.FillDirection.Horizontal
+grid.SortOrder = Enum.SortOrder.LayoutOrder
+grid.Parent = itemContainer
+
+-- Every Frame you parent to itemContainer now arranges in a grid automatically`,
+      },
+      { type: "heading", level: 2, text: "UIListLayout: vertical stack" },
+      {
+        type: "text",
+        body: "Stack elements vertically (or horizontally) with consistent spacing. The standard way to build menus and lists.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "List layout",
+        code: `local list = Instance.new("UIListLayout")
+list.FillDirection = Enum.FillDirection.Vertical
+list.Padding = UDim.new(0, 12)
+list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+list.SortOrder = Enum.SortOrder.LayoutOrder
+list.Parent = menuContainer`,
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "Where do I put Roblox Lua GUI code in Studio?", answer: "Client-side GUI code goes in a LocalScript under StarterGui. Server-side logic (DataStore, purchase validation, game rules) goes in a Script under ServerScriptService. Never put GUI code in a server Script - it runs on the server and will not render on the player's screen." },
+          { question: "How do I write Roblox Lua GUI code to create a ScreenGui?", answer: "Create an Instance.new(\"ScreenGui\"), set ResetOnSpawn = false, and parent it to Players.LocalPlayer:WaitForChild(\"PlayerGui\"). Every GUI element you parent to that ScreenGui renders on the player's screen." },
+          { question: "How do I make a button do something on click?", answer: "Connect the button's MouseButton1Click event to a function. For game actions (starting a match, buying an item), fire a RemoteEvent to the server inside that function - never let the client decide game state directly." },
+          { question: "How do I animate a GUI element in Roblox?", answer: "Use TweenService:Create(element, TweenInfo.new(time, easingStyle, direction), { property = targetValue }) and call :Play(). Animate Size, Position, BackgroundTransparency, or BackgroundColor3 for smooth UI motion." },
+          { question: "How do I save player data in Roblox?", answer: "Use DataStoreService:GetDataStore, then GetAsync to load and SetAsync to save, always wrapped in pcall. Save on PlayerRemoving as a backup, and load on PlayerAdded." },
+          { question: "Should I use UIGridLayout or UIListLayout?", answer: "UIGridLayout arranges elements in a 2D grid (inventories, shops). UIListLayout stacks them in one direction (menus, vertical lists). Use the one that matches your layout, and let it handle alignment automatically instead of hand-placing elements." },
+        ],
+      },
+    ],
+  },
+  "roblox-gui-scaling-problems": {
+    slug: "roblox-gui-scaling-problems",
+    title: "Roblox GUI Scaling Problems: FAQ and Fixes (2026)",
+    description:
+      "Fix any Roblox GUI scaling problem: why your UI breaks on mobile, the Scale vs Offset mistake, and rules for GUIs that work on every device.",
+    targetKeyword: "roblox gui scaling problem",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/roblox-gui-scaling-problems.webp`,
+    keywords: ["roblox gui scaling problem", "roblox ui hard to make", "roblox studio gui slow"],
+    content: `If your GUI looks perfect on your monitor but broken on your phone, you have a Roblox GUI scaling problem. These issues all trace back to sizing with Offset (pixels) instead of Scale (percentages).`,
+    sections: [
+      { type: "heading", level: 2, text: "Why does my GUI look tiny on mobile?" },
+      {
+        type: "text",
+        body: "Your GUI is sized with Offset (pixels), so it stays the same pixel size on every device. A 300-pixel button is small on a 1920px monitor but nearly fills a 375px phone. The fix is Scale: UDim2.new(0.4, 0, 0.1, 0) means 40% of the parent width and 10% of the parent height, on any screen size. Switch your Size and Position values from Offset to Scale and the layout resizes proportionally.",
+      },
+      { type: "heading", level: 2, text: "Why is my GUI so hard to make?" },
+      {
+        type: "text",
+        body: "Most of the pain comes from two things: UDim2's Scale/Offset system is confusing to beginners, and Roblox Studio has no visual canvas for laying out GUI. You drag a Frame, type a UDim2, press Play, check, repeat - that loop eats hours for a single menu. A visual editor collapses it into drag, refine, export. The Scale/Offset math is handled for you, and you preview on mobile before exporting instead of re-entering Studio to test every change.",
+      },
+      { type: "heading", level: 2, text: "Why is Roblox Studio GUI so slow to build?" },
+      {
+        type: "text",
+        body: "Studio forces manual placement: drag each Frame, type each UDim2, press Play to check, repeat. That loop eats hours for a single menu. The editor collapses it into describe, refine on canvas, export - with live device preview so you do not re-enter Studio to test every change. The editor also generates Luau programmatically, so adding 10 buttons is one prompt, not 10 drag-and-property-panel cycles.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Fix: Scale vs Offset",
+        code: `-- WRONG: sized with Offset only. Breaks on mobile.
+button.Size = UDim2.new(0, 300, 0, 60)
+-- 300px on 1920px desktop = fine. 300px on 375px phone = almost full width.
+
+-- RIGHT: sized with Scale. Works on every device.
+button.Size = UDim2.new(0.4, 0, 0.1, 0)
+-- 40% of parent width, 10% of parent height, on any screen size.
+
+-- Center it properly
+button.AnchorPoint = Vector2.new(0.5, 0.5)
+button.Position = UDim2.new(0.5, 0, 0.5, 0)`,
+      },
+      { type: "heading", level: 2, text: "How do I make my GUI responsive on every device?" },
+      {
+        type: "text",
+        body: "Three rules fix 90% of scaling problems. First, use Scale for Size and Position on every layout element - containers, buttons, panels. Second, set AnchorPoint before positioning so elements center and anchor correctly. Third, use UIAspectRatioConstraint on anything that must keep its proportions (avatars, icons, video frames). Test on the editor's device preview before exporting - if the layout breaks on a 375px phone, shrink the Scale values or restructure with UIListLayout. A fourth rule: avoid nesting too many Scale-based frames inside each other, because compound scaling can shrink text to unreadable sizes on small screens. Use UISizeConstraint to set a minimum pixel size on text labels so they never collapse below a readable threshold.",
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "Why does a Roblox GUI scaling problem make my UI look different on mobile and desktop?", answer: "You sized it with Offset (pixels) instead of Scale (percentages). A 300-pixel button is small on a 1920px monitor but nearly fills a 375px phone. Switch Size and Position to Scale and the layout resizes proportionally on any screen." },
+          { question: "Should I ever use Offset, or is that a Roblox GUI scaling problem?", answer: "Only for small fixed values: padding, borders, and tiny icons that must stay an exact pixel size. For containers, buttons, and layout elements, always use Scale. A common pattern is Scale for the main size plus a small Offset for padding." },
+          { question: "How do I center a GUI element on screen?", answer: "Set AnchorPoint to (0.5, 0.5) and Position to UDim2.new(0.5, 0, 0.5, 0). AnchorPoint moves the element's reference point to its center, so Position (0.5, 0.5) places the center at the screen's center on any device." },
+          { question: "What is UIAspectRatioConstraint and when do I need it?", answer: "It locks an element's aspect ratio so it never stretches when the parent resizes. Use it for images, avatars, and video frames that must keep their proportions. Set the AspectRatio property (for example 1.78 for 16:9) and the element keeps that ratio on any screen." },
+          { question: "How do I test my GUI on mobile without a phone?", answer: "Use the editor's device preview. Switch between Desktop, Tablet, and Mobile frames and the canvas shows exactly how your GUI will look on that device. Fix any layout breaks before exporting, instead of re-entering Studio to test every change." },
+        ],
+      },
+    ],
+  },
+  "roblox-settings-menu-template": {
+    slug: "roblox-settings-menu-template",
+    title: "Roblox Settings Menu Template: Volume and Graphics (2026)",
+    description:
+      "Build a Roblox settings menu template with volume sliders, graphics toggles, keybinds, and DataStore persistence. Full Luau code with UIListLayout.",
+    targetKeyword: "roblox settings menu template",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/roblox-settings-menu-template.webp`,
+    keywords: ["roblox settings menu template", "roblox settings gui", "roblox settings menu script"],
+    content: `A Roblox settings menu template saves you from building one of those UI pieces every game needs but nobody wants to make from scratch: volume sliders, graphics toggles, and keybinds with DataStore persistence.`,
+    sections: [
+      { type: "heading", level: 2, text: "Settings menu structure with UIListLayout" },
+      {
+        type: "text",
+        body: "Build the settings menu as a single Frame with a UIListLayout inside. Each row is a setting: a label on the left and a control (slider or toggle) on the right. UIListLayout stacks the rows automatically with consistent spacing, so adding a new setting is one Frame. The menu opens from a gear button in the corner and closes with Escape or a close button. Use Scale-based sizing so the menu fits any screen, and put a semi-transparent backdrop behind it that closes the menu when clicked.",
+      },
+      { type: "heading", level: 2, text: "Volume sliders with live SoundService binding" },
+      {
+        type: "text",
+        body: "The volume slider is a draggable handle on a track. When the player drags it, update SoundService.AudioEffects or your custom audio groups immediately - no server round-trip needed. The slider value is a ratio (0 to 1) that maps to volume (0 to 100%). Show the current value as a percentage next to the slider. Save the value to a settings table so it can be persisted to DataStore on change or on leave.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "StarterGui/SettingsClient (LocalScript)",
+        code: `-- Settings Menu - Client Script
+-- Place in: StarterGui (LocalScript)
+
+local Players = game:GetService("Players")
+local SoundService = game:GetService("SoundService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+local gui = script.Parent
+local settings = { masterVolume = 0.5, musicOn = true, quality = "Auto" }
+
+local saveEvent = ReplicatedStorage:WaitForChild("SaveSettings")
+
+-- Volume slider: bind to SoundService live
+local volumeSlider = gui:WaitForChild("VolumeSlider")
+local volumeHandle = volumeSlider:WaitForChild("Handle")
+local volumeLabel = volumeSlider:WaitForChild("ValueLabel")
+
+local function setVolume(ratio)
+	settings.masterVolume = ratio
+	SoundService.Volume = ratio
+	volumeLabel.Text = math.floor(ratio * 100) .. "%"
+	volumeHandle.Position = UDim2.new(ratio, 0, 0.5, 0)
+	saveEvent:FireServer(settings)
+end
+
+-- Drag the handle
+local dragging = false
+volumeHandle.MouseButton1Down:Connect(function() dragging = true end)
+game:GetService("UserInputService").InputEnded:Connect(function()
+	if dragging then dragging = false end
+end)
+volumeSlider.MouseMoved:Connect(function(x)
+	if dragging then
+		local rel = math.clamp((x - volumeSlider.AbsolutePosition.X) / volumeSlider.AbsoluteSize.X, 0, 1)
+		setVolume(rel)
+	end
+end)`,
+      },
+      { type: "heading", level: 2, text: "Graphics and quality toggles" },
+      {
+        type: "text",
+        body: "Graphics settings let players trade visual quality for performance. A quality dropdown (Auto/Low/Medium/High) maps to GraphicsQualityLevel in GameSettings, or to your own lighting and shadow toggles if you manage them manually. Show the current quality as the dropdown label, and apply it immediately on change. On mobile, default to Auto or Low so the game runs smoothly on lower-end devices.",
+      },
+      { type: "heading", level: 2, text: "Keybind settings" },
+      {
+        type: "text",
+        body: "Keybinds let players remap actions to their preferred keys. Store keybinds as a table mapping action names to KeyCode strings, and show each as a row with the action name and its current key. When the player clicks a key row, wait for the next key press and assign it. Save keybinds to DataStore with the rest of the settings. Common keybinds include inventory toggle, sprint, jump, and menu open.",
+      },
+      { type: "heading", level: 2, text: "Save settings with DataStore" },
+      {
+        type: "text",
+        body: "Settings mean nothing if they reset on rejoin. Save the settings table to DataStore whenever the player changes a value, and load it on join to restore their preferences. Wrap DataStore calls in pcall so a failed save does not crash the game, and save on PlayerRemoving as a final backup. On join, apply the loaded values to every slider, toggle, and keybind row so the menu shows the player's saved state.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "ServerScriptService/SettingsServer (Script)",
+        code: `-- Settings Menu - Server Script
+-- Place in: ServerScriptService (Script)
+
+local Players = game:GetService("Players")
+local DataStoreService = game:GetService("DataStoreService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local settingsStore = DataStoreService:GetDataStore("PlayerSettings")
+local saveEvent = ReplicatedStorage:WaitForChild("SaveSettings")
+local loadEvent = ReplicatedStorage:WaitForChild("LoadSettings")
+
+local playerSettings = {}
+
+-- Load settings on join
+local function loadSettings(player)
+	local success, data = pcall(function()
+		return settingsStore:GetAsync(player.UserId)
+	end)
+	playerSettings[player.UserId] = (success and data) or {}
+	loadEvent:FireClient(player, playerSettings[player.UserId])
+end
+
+-- Save settings
+saveEvent.OnServerEvent:Connect(function(player, settings)
+	playerSettings[player.UserId] = settings
+	pcall(function()
+		settingsStore:SetAsync(player.UserId, settings)
+	end)
+end)
+
+Players.PlayerAdded:Connect(loadSettings)
+Players.PlayerRemoving:Connect(function(player)
+	if playerSettings[player.UserId] then
+		pcall(function()
+			settingsStore:SetAsync(player.UserId, playerSettings[player.UserId])
+		end)
+	end
+end)`,
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "How do I make a volume slider work in a Roblox settings menu template?", answer: "Create a slider with a draggable handle on a track. When the player drags it, update SoundService.Volume with the ratio (0 to 1). Show the percentage next to the slider, and save the value to DataStore so it persists across sessions." },
+          { question: "How does a Roblox settings menu template save settings across sessions?", answer: "Store settings in a table and save it to DataStore whenever the player changes a value, and on PlayerRemoving as a backup. Load it on join and apply the saved values to every slider, toggle, and keybind row." },
+          { question: "How do I add keybind settings?", answer: "Store keybinds as a table mapping action names to KeyCode strings. Show each as a row with the action name and its current key. When the player clicks a key row, wait for the next key press and assign it, then save to DataStore." },
+          { question: "Should graphics settings apply immediately or on restart?", answer: "Apply them immediately. Players expect to see the effect of a quality change right away, not after rejoining. Update GraphicsQualityLevel or your custom lighting toggles live, and show the current quality as the dropdown label." },
+          { question: "Can I customize the settings menu layout?", answer: "Yes. The menu uses UIListLayout, so adding a new setting is one Frame with a label and a control. Open the layout in the editor, drag in a new row, and bind its control to your settings table. The save/load logic stays the same." },
+        ],
+      },
+    ],
+  },
+  "roblox-leaderboard-gui": {
+    slug: "roblox-leaderboard-gui",
+    title: "Roblox Leaderboard GUI Tutorial: Ranked DataStore (2026)",
+    description:
+      "Build a Roblox leaderboard GUI with OrderedDataStore ranking, top-10 display, avatars, and auto-refresh. Full client and server Luau with rate limits.",
+    targetKeyword: "roblox leaderboard gui",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/roblox-leaderboard-gui.webp`,
+    keywords: ["roblox leaderboard gui", "ordereddatastore tutorial", "roblox global leaderboard"],
+    content: `A Roblox leaderboard GUI is the social proof that keeps players grinding. Show the top 10 players by coins, kills, or wins, and players will chase the ranking for hours. This tutorial builds one with OrderedDataStore.`,
+    sections: [
+      { type: "heading", level: 2, text: "OrderedDataStore basics" },
+      {
+        type: "text",
+        body: "OrderedDataStore is the standard way to rank players in Roblox. You write each player's score with SetAsync, and the store keeps them sorted automatically. When you read with GetSortedAsync, you get the top N entries in descending order. The key is the user's UserId, the value is their score. OrderedDataStore has rate limits - reads are limited to about 5 per second per server - so refresh on a timer, not on every change.",
+      },
+      { type: "heading", level: 2, text: "Write scores on the server" },
+      {
+        type: "text",
+        body: "The server is the only place you should write leaderboard scores. When a player's score changes (they earn coins, win a match, level up), update their entry in OrderedDataStore. Use pcall so a failed write does not crash the game, and throttle updates - if a player's score changes many times per second, only write the final value after a short delay.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "ServerScriptService/LeaderboardServer (Script)",
+        code: `-- Leaderboard - Server Script
+-- Place in: ServerScriptService (Script)
+
+local Players = game:GetService("Players")
+local DataStoreService = game:GetService("DataStoreService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local leaderboard = DataStoreService:GetOrderedDataStore("GlobalLeaderboard")
+local refreshEvent = ReplicatedStorage:WaitForChild("LeaderboardRefresh")
+
+-- Write a player's score (call this when their score changes)
+local function writeScore(userId, score)
+	pcall(function()
+		leaderboard:SetAsync(tostring(userId), score)
+	end)
+end
+
+-- Read top 10 and push to clients
+local function refreshLeaderboard()
+	local success, pages = pcall(function()
+		return leaderboard:GetSortedAsync(false, 10)
+	end)
+	if not success then return end
+	local top = pages:GetCurrentPage()
+	refreshEvent:FireAllClients(top)
+end
+
+-- Auto-refresh every 60 seconds (respects rate limits)
+while true do
+	refreshLeaderboard()
+	task.wait(60)
+end`,
+      },
+      { type: "heading", level: 2, text: "Display top 10 with avatars" },
+      {
+        type: "text",
+        body: "The client renders the top 10 rows: rank, avatar, player name, and score. Fetch the player's avatar thumbnail with Players:GetUserThumbnailAsync using their UserId. Use UIListLayout to stack the rows, and fade each row in with a Tween when the leaderboard refreshes so the update feels alive. Show the player's own rank below the top 10 if they are not in it.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "StarterGui/LeaderboardClient (LocalScript)",
+        code: `-- Leaderboard - Client Script
+-- Place in: StarterGui (LocalScript)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+
+local gui = script.Parent
+local rowsContainer = gui:WaitForChild("Rows")
+local refreshEvent = ReplicatedStorage:WaitForChild("LeaderboardRefresh")
+
+local function updateRows(top)
+	for i, row in ipairs(rowsContainer:GetChildren()) do
+		if row:IsA("Frame") then row:Destroy() end
+	end
+	for i, entry in ipairs(top) do
+		local userId = tonumber(entry.key)
+		local score = entry.value
+		local row = Instance.new("Frame")
+		row.Size = UDim2.new(1, 0, 0, 40)
+		row.BackgroundTransparency = 0.5
+		row.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+		row.Parent = rowsContainer
+
+		local rank = Instance.new("TextLabel")
+		rank.Text = "#" .. i
+		rank.Size = UDim2.new(0.15, 0, 1, 0)
+		rank.BackgroundTransparency = 1
+		rank.TextColor3 = Color3.fromRGB(255, 255, 255)
+		rank.Parent = row
+
+		local avatar = Instance.new("ImageLabel")
+		avatar.Image = Players:GetUserThumbnailAsync(
+			userId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100
+		)
+		avatar.Size = UDim2.new(0, 32, 0, 32)
+		avatar.Position = UDim2.new(0.2, 0, 0.1, 0)
+		avatar.Parent = row
+
+		local nameLabel = Instance.new("TextLabel")
+		nameLabel.Text = Players:GetNameFromUserIdAsync(userId) or "Player"
+		nameLabel.Size = UDim2.new(0.4, 0, 1, 0)
+		nameLabel.Position = UDim2.new(0.35, 0, 0, 0)
+		nameLabel.BackgroundTransparency = 1
+		nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+		nameLabel.Parent = row
+
+		local scoreLabel = Instance.new("TextLabel")
+		scoreLabel.Text = tostring(score)
+		scoreLabel.Size = UDim2.new(0.2, 0, 1, 0)
+		scoreLabel.Position = UDim2.new(0.75, 0, 0, 0)
+		scoreLabel.BackgroundTransparency = 1
+		scoreLabel.TextColor3 = Color3.fromRGB(80, 200, 120)
+		scoreLabel.Parent = row
+
+		-- Fade in
+		row.BackgroundTransparency = 1
+		TweenService:Create(row, TweenInfo.new(0.2), { BackgroundTransparency = 0.5 }):Play()
+	end
+end
+
+refreshEvent.OnClientEvent:Connect(updateRows)`,
+      },
+      { type: "heading", level: 2, text: "Rate limits and auto-refresh" },
+      {
+        type: "text",
+        body: "OrderedDataStore has read rate limits - about 5 reads per second per server. Refreshing the leaderboard on every score change would hit that limit fast. Instead, refresh on a timer (every 60 seconds is safe), and cache the top 10 so clients always have data to show even if a read fails. If your game has many servers, stagger the refresh times slightly so they do not all read at the same moment.",
+      },
+      { type: "heading", level: 2, text: "Show the player's own rank" },
+      {
+        type: "text",
+        body: "Players want to know where they stand even if they are not in the top 10. After the top 10 rows, show the local player's rank and score. To get it, use OrderedDataStore:GetSortedAsync with a larger page size and scan for their UserId, or maintain a separate regular DataStore for each player's score and compute rank on the server. Show it as \"Your rank: #147 (12,450)\" below the top 10.",
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "What is OrderedDataStore in a Roblox leaderboard GUI?", answer: "OrderedDataStore keeps entries sorted automatically. Write scores with SetAsync (key = UserId, value = score), and read the top N with GetSortedAsync(false, 10) for descending order. It is the standard way to build a global leaderboard in Roblox." },
+          { question: "How often should a Roblox leaderboard GUI refresh?", answer: "Every 60 seconds is safe. OrderedDataStore has read rate limits (about 5 per second per server), so refreshing on every score change will hit the limit. Cache the top 10 so clients always have data even if a read fails." },
+          { question: "How do I show player avatars on the leaderboard?", answer: "Use Players:GetUserThumbnailAsync with the player's UserId to get their avatar thumbnail, and set it on an ImageLabel in each row. Use HeadShot for a circular avatar or AvatarBust for a full body shot." },
+          { question: "How do I prevent the leaderboard from breaking under load?", answer: "Throttle writes (only update the final score after a delay, not on every change), refresh on a timer instead of on every change, and wrap all DataStore calls in pcall so a failed read or write does not crash the game." },
+          { question: "How do I show the player's own rank if they are not in the top 10?", answer: "Show it below the top 10 rows. Use GetSortedAsync with a larger page size and scan for their UserId, or maintain a separate score DataStore and compute rank on the server. Display it as \"Your rank: #147 (score)\" so players know where they stand." },
+        ],
+      },
+    ],
+  },
+  "how-to-make-roblox-gui-look-good": {
+    slug: "how-to-make-roblox-gui-look-good",
+    title: "How to Make Roblox GUI Look Good: Design System (2026)",
+    description:
+      "Learn how to make Roblox GUI look good with a design system: consistent colors, typography, spacing, and component patterns for polished menus and HUDs.",
+    targetKeyword: "how to make roblox gui look good",
+    publishedAt: "2026-07-21",
+    modifiedAt: "2026-07-21",
+    authorName: "Roblox GUI Maker Team",
+    imageUrl: `${SITE_URL}/blog/how-to-make-roblox-gui-look-good.webp`,
+    keywords: ["how to make roblox gui look good", "roblox ui best practices", "roblox gui design system"],
+    content: `Learning how to make Roblox GUI look good starts with one rule: consistency. The same colors, spacing, and typography across every menu, HUD, and panel is what makes an interface feel polished.`,
+    sections: [
+      { type: "heading", level: 2, text: "Build a color palette and stick to it" },
+      {
+        type: "text",
+        body: "Pick three to four colors and use them everywhere: a background color (dark, like #0B0B12), a surface color (slightly lighter, like #14141F), a text color (white or near-white, like #F4F4F8), and one accent color for the primary action (your brand color, like violet #6D5DFB). Define them as constants and reuse them - do not invent new colors per panel. The accent color should appear only on the primary button and key interactive elements, so players learn to associate it with \"tap here.\" Consistent color is the single biggest difference between amateur and professional GUIs.",
+      },
+      { type: "heading", level: 2, text: "Typography: readable fonts, sensible sizes" },
+      {
+        type: "text",
+        body: "Use one readable font for body text (Gotham or SourceSans) and one display font for titles (GothamBold or FredokaOne). Set minimum sizes: titles 28+, body 18-22, nothing below 14. Use TextScaled with a UITextSizeConstraint so text never shrinks below readability on small screens. Avoid all-caps for long text - it is harder to read. And use monospace fonts (RobotoMono) only for numbers like ammo counters and timers, so digits do not shift width as they change.",
+      },
+      { type: "heading", level: 2, text: "Spacing: consistent padding and gaps" },
+      {
+        type: "text",
+        body: "Inconsistent spacing makes a GUI feel sloppy. Pick a base spacing unit (8 or 12 pixels) and use it for all padding, gaps, and margins. Panel padding should be the same on every panel (16 or 24 pixels). Button gaps should be consistent (12 pixels between buttons). Use UIListLayout with a Padding value to enforce consistent spacing automatically instead of hand-placing each element. When spacing is consistent, the GUI feels organized; when it varies randomly, it feels chaotic.",
+      },
+      { type: "heading", level: 2, text: "Component patterns: buttons, cards, and panels" },
+      {
+        type: "text",
+        body: "Define patterns for your common components and reuse them. A button pattern: UICorner (8px radius), BackgroundColor3 (accent for primary, surface for secondary), TextScaled with a min size, and a hover state that brightens slightly. A card pattern: surface background, 8px corner radius, 16px padding, and a subtle border. A panel pattern: background color, 12px corner radius, and a title with 28+ size. When every button looks the same and every card looks the same, the GUI feels cohesive. When each is styled differently, it feels like a prototype.",
+      },
+      {
+        type: "code",
+        language: "lua",
+        filename: "Design system constants",
+        code: `-- Design system constants - define once, reuse everywhere
+local DS = {
+	background = Color3.fromRGB(11, 11, 18),   -- #0B0B12
+	surface = Color3.fromRGB(20, 20, 31),      -- #14141F
+	text = Color3.fromRGB(244, 244, 248),      -- #F4F4F8
+	textMuted = Color3.fromRGB(161, 161, 181), -- #A1A1B5
+	accent = Color3.fromRGB(109, 93, 251),     -- #6D5DFB brand violet
+	spacing = 12,                              -- base spacing unit
+	cornerRadius = 8,                          -- standard corner radius
+}
+
+-- Apply to a button
+local button = Instance.new("TextButton")
+button.BackgroundColor3 = DS.accent
+button.TextColor3 = DS.text
+button.TextSize = 20
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, DS.cornerRadius)
+corner.Parent = button`,
+      },
+      { type: "heading", level: 2, text: "Accessibility and mobile" },
+      {
+        type: "text",
+        body: "A good-looking GUI that is unusable on mobile is not good. Test on a 375px phone screen: can you read the text? Are the buttons big enough to tap (at least 60x60 logical pixels)? Is the contrast high enough to read in bright light? Use Scale-based sizing so layouts resize proportionally, and use high contrast pairs (light text on dark backgrounds) for readability. Accessibility is part of good design, not an afterthought.",
+      },
+      { type: "heading", level: 2, text: "Frequently asked questions" },
+      {
+        type: "faq",
+        items: [
+          { question: "What is the most important rule for how to make Roblox GUI look good?", answer: "Consistency. Use the same colors, spacing, and component styles everywhere. A GUI with a design system (consistent palette, typography, and patterns) looks professional; one without looks thrown together. Pick a palette and stick to it." },
+          { question: "How many colors should my GUI use?", answer: "Three to four: background, surface, text, and one accent for the primary action. The accent color should appear only on the main button and key interactive elements. Too many colors make a GUI feel noisy." },
+          { question: "What font sizes should I use for mobile?", answer: "Titles 28+, body text 18-22, and nothing below 14. Text that looks fine on a PC monitor is often illegibly small on a phone. Use UITextSizeConstraint with TextScaled so text never shrinks below readability." },
+          { question: "How to make Roblox GUI look good with consistent buttons?", answer: "Define a button pattern: UICorner (8px radius), BackgroundColor3 (accent for primary, surface for secondary), TextScaled with a min size, and a hover state. Reuse the pattern for every button so they all look the same." },
+          { question: "Should I use a dark or light background?", answer: "Dark backgrounds work better for most Roblox games because they are easier on the eyes during long sessions and make bright accent colors pop. Use a dark background (#0B0B12 or similar) with light text and one bright accent color." },
+        ],
+      },
+    ],
   },
 };

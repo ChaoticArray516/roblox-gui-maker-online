@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Breadcrumb, GuideDetailJsonLd } from "@/components/seo";
+import { Breadcrumb, GuideDetailJsonLd, buildPageOpenGraph } from "@/components/seo";
 import { GUIDES, GUIDE_SLUGS, type GuideSlug } from "./data";
 
 export function generateStaticParams() {
@@ -22,6 +22,11 @@ export async function generateMetadata({
     title: guide.title,
     description: guide.description,
     alternates: { canonical: `/guides/${guide.slug}` },
+    ...buildPageOpenGraph({
+      url: `/guides/${guide.slug}`,
+      title: guide.title,
+      description: guide.description,
+    }), // SOP-3W-02
   };
 }
 

@@ -3,71 +3,25 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SITE_NAME } from "@/lib/site-config";
-import { FaqJsonLd } from "@/components/seo";
+import { FAQAccordion } from "@/components/content";
+import { FaqJsonLd, buildPageOpenGraph } from "@/components/seo";
+import { OG_PAGES } from "@/lib/og-pages";
+import { FAQ_CATEGORIES, FAQ_ITEMS_FLAT, getFAQsByCategory } from "./data";
+
+const OG = OG_PAGES["/faq"];
 
 export const metadata: Metadata = {
-  title: `${SITE_NAME} — Frequently Asked Questions`,
-  description:
-    "Answers to common questions about Roblox GUI Maker — pricing, code export, Studio plugin, Figma import, and limits.",
+  title: OG.title,
+  description: OG.description,
   alternates: { canonical: "/faq" },
+  ...buildPageOpenGraph({ url: "/faq", ...OG }), // SOP-3W-02
 };
-
-const FAQ_CATEGORIES = ["General", "Pricing", "Technical", "Plugin"] as const;
-
-const faqItems = [
-  {
-    category: "General",
-    q: "What is Roblox GUI Maker?",
-    a: "Roblox GUI Maker is an AI-powered online tool that helps you create game user interfaces without coding. It combines a drag-and-drop visual editor, AI code generation, a planned Figma-to-Studio import feature, and a template marketplace into one platform. A Roblox Studio plugin is also in development.",
-  },
-  {
-    category: "Pricing",
-    q: "Is Roblox GUI Maker free?",
-    a: "Yes, there is a free tier that includes the full drag-and-drop editor, 50 AI generation credits per month, clean Luau export, and access to the free template library. The Pro plan will be $9.99/month when subscriptions open and will add unlimited AI generations, premium templates, and advanced features.",
-  },
-  {
-    category: "Technical",
-    q: "How does the AI code generation work?",
-    a: "You describe your GUI in natural language (e.g., 'Create a health bar with a red background, white border, and green fill that decreases from left to right'). Our AI generates the complete Luau script with proper Scale/Offset handling, Signal patterns, and event handlers. The code follows Roblox best practices and can be directly used in your game.",
-  },
-  {
-    category: "Plugin",
-    q: "How do I install the Roblox Studio plugin?",
-    a: "The plugin is not yet available. Visit roblox-gui-maker.online/plugin and click Join Plugin Waitlist. We'll email you as soon as it passes Roblox Creator Marketplace review and can be installed from your Studio Plugins tab.",
-  },
-  {
-    category: "Technical",
-    q: "Can I import my Figma designs into Roblox Studio?",
-    a: "A Figma-to-Roblox converter is in development. Join the waitlist at roblox-gui-maker.online/figma-to-roblox to be notified when public Figma URL conversion, automatic asset upload, and Studio plugin import are ready.",
-  },
-  {
-    category: "Technical",
-    q: "What Roblox GUI components are supported?",
-    a: "We support all Roblox GUI objects: ScreenGui, Frame, TextLabel, TextButton, ImageLabel, ImageButton, TextBox, ScrollingFrame, ViewportFrame, VideoFrame, UIGridLayout, UIListLayout, UIPageLayout, UITableLayout, UIAspectRatioConstraint, UISizeConstraint, UITextSizeConstraint, and UICorner.",
-  },
-  {
-    category: "Pricing",
-    q: "Can I sell the GUIs I create with Roblox GUI Maker?",
-    a: "Yes! GUIs you create with the free tier or Pro plan (when available) are yours to use in any commercial Roblox game. Templates purchased from the marketplace have their own license terms — check each template's license before redistributing.",
-  },
-  {
-    category: "General",
-    q: "Do I need to know Luau scripting to use Roblox GUI Maker?",
-    a: "No! The drag-and-drop editor handles all layout and positioning visually. The AI generates scripts for button clicks, animations, and data binding automatically. However, knowing Luau helps you customize the generated code for complex game logic.",
-  },
-  {
-    category: "Pricing",
-    q: "What's your refund policy?",
-    a: "Once Pro subscriptions open, they will come with a 14-day money-back guarantee. Email chaoticarray.rf516@gmail.com within 14 days of your first charge and we'll issue a full refund — no questions asked. Marketplace template purchases are also eligible for a 14-day refund if the template is broken or significantly differs from its description.",
-  },
-];
 
 export default function FaqPage() {
   return (
     <>
       <head>
-        <FaqJsonLd />
+        <FaqJsonLd items={FAQ_ITEMS_FLAT} />
       </head>
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 py-24">
         <h1 className="font-display text-4xl font-semibold tracking-tight text-text">
@@ -97,25 +51,15 @@ export default function FaqPage() {
 
         <div className="flex flex-col gap-8">
           {FAQ_CATEGORIES.map((cat) => {
-            const items = faqItems.filter((i) => i.category === cat);
+            const items = getFAQsByCategory(cat);
             return (
               <section key={cat} id={cat.toLowerCase()}>
                 <h2 className="font-display text-xl font-semibold text-text">{cat}</h2>
-                <div className="mt-4 flex flex-col gap-3">
-                  {items.map((item) => (
-                    <details
-                      key={item.q}
-                      className="rounded-2xl border border-glass-border bg-surface p-6"
-                    >
-                      <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                        <h3 className="inline text-lg font-semibold text-text">
-                          {item.q}
-                        </h3>
-                      </summary>
-                      <p className="mt-3 text-text-muted">{item.a}</p>
-                    </details>
-                  ))}
-                </div>
+                <FAQAccordion
+                  items={items}
+                  injectSchema={false}
+                  className="mt-4"
+                />
               </section>
             );
           })}

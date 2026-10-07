@@ -3,16 +3,20 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { PluginJsonLd } from "@/components/seo";
+import { PluginJsonLd, buildPageOpenGraph } from "@/components/seo";
+import { OG_PAGES } from "@/lib/og-pages";
+import { SUPPORT_EMAIL } from "@/lib/site-config";
+
+const OG = OG_PAGES["/plugin"];
 
 export const metadata: Metadata = {
-  title: "Roblox Studio Plugin — Join the Waitlist",
-  description:
-    "The Roblox GUI Maker Studio plugin is coming soon. Join the waitlist to get notified when it lands on the Roblox Creator Marketplace.",
+  title: OG.title,
+  description: OG.description,
   alternates: { canonical: "/plugin" },
+  ...buildPageOpenGraph({ url: "/plugin", ...OG }), // SOP-3W-02
 };
 
-const WAITLIST_EMAIL = "chaoticarray.rf516@gmail.com";
+const WAITLIST_EMAIL = SUPPORT_EMAIL;
 const WAITLIST_SUBJECT = "Notify me when the Roblox GUI Maker Studio plugin launches";
 
 const PLANNED_FEATURES = [
@@ -48,11 +52,12 @@ export default function PluginPage() {
             Coming soon
           </p>
           <h1 className="font-display text-4xl font-semibold tracking-tight text-text">
-            Join the Waitlist for the Roblox GUI Maker Studio Plugin
+            Roblox Studio Plugin - One-Click GUI Import
           </h1>
           <p className="text-lg text-text-muted">
-            The plugin is not yet available. Add your email to be the first to
-            know when it lands on the Roblox Creator Marketplace.
+            The plugin is not yet available. Join the waitlist to be the first
+            to know when it lands on the Roblox Creator Marketplace and you can
+            import saved projects into StarterGui in one click.
           </p>
           <div className="flex flex-wrap gap-3">
             <a
